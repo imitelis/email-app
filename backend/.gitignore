@@ -1,0 +1,10 @@
+# to ignore
+__pycache__/
+bases/__pycache__/
+models/__pycache__/
+routers/__pycache__/
+
+venv/
+
+# lets NOT ignore .env for now
+# .env
