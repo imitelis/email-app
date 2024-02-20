@@ -11,7 +11,7 @@ from utils.restxapi import api
 from utils.database import db
 
 # api routers
-from routers import users_router
+from routers import users_router,emails_router
 
 # not sure if necc for creating models here
 from models import Student, Course
@@ -29,6 +29,7 @@ def create_app():
 
     # API Routers
     api.add_namespace(users_router)
+    api.add_namespace(emails_router)
     
     # tracemalloc
     tracemalloc.start()

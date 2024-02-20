@@ -1,8 +1,8 @@
 # bases/__init__.py
-# from .user import User
-# from .email import Email
+from .user import UserBase, UserInputBase
+from .email import EmailBase, EmailInputBase
 
-# fake
+# fake -> Delete?
 from .course import CourseBase, CourseInputBase
 from .student import StudentBase, StudentInputBase
 
@@ -13,4 +13,4 @@ to our models, but not all fields are
 here, since they consider user input
 """
 
-__all__ = ["CourseBase", "CourseInputBase", "StudentBase", "StudentInputBase"]
+__all__ = ["CourseBase", "CourseInputBase", "StudentBase", "StudentInputBase","UserBase","UserInputBase","EmailBase", "EmailInputBase"]
