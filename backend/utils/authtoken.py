@@ -1,48 +1,18 @@
 
-import os
+from flask_jwt_extended import create_access_token
 
 # utils
-import jwt
-from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-"""
-Let's import those secrety things
-by using python-dotenv and os
-"""
-load_dotenv()
-
-SECRET_KEY = os.getenv('SECRET_KEY')
+# Set the expiration time to 1 hour
+expires_in = timedelta(hours=1)
 
 
 """
 Generate token, it receives input string
-user_username and by enforced algorithm
-and expiration time of 90 minutes,
+email_address but without expires_delta
+so the token no expires and no refresh
 it uses jwt to encode an access token
 """
-def generate_token(user_username):
-    access_token_expires = timedelta(minutes=90)
-    access_token = jwt.encode(
-        {"sub": user_username, "exp": datetime.utcnow() + access_token_expires},
-        SECRET_KEY,
-        algorithm='HS256'
-    )
-    return access_token
-
-
-"""
-Decode authorization, it receives input string
-of the string form "Bearer ey..." with the token
-following after the Bearer, it exports to all crud
-endpoints, it uses jwt for the decoding and exceptions
-"""
-def decode_authorization(authorization: str) -> dict:  
-    token = authorization.replace("Bearer ", "")
-    try:
-        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-    except:
-        return { "error": "Invalid token" }
-#        raise HTTPException(status_code=401, detail="Invalid token")
-
-    return decoded_token
+def gen_access_token(email_name):
+    return create_access_token(email_name) # , expires_delta=expires_in

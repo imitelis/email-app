@@ -15,3 +15,8 @@ UserInputBase = api.model('User', {
     'cellphone': fields.String,
     'password': fields.String,
 })
+
+LoginBase = api.model('LoginBase', {
+    'email': fields.String,
+    'password': fields.String
+})

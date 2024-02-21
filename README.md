@@ -48,15 +48,16 @@
   *  Set ORM of user, email and email folders
   *  Start `backend` folder and configure project V
   *  Check Swagger/OpenAPI on Flask V
-  *  Check injection dependency on Flask
+  *  Check injection dependency on Flask V
   *  Build login and secured emails API on Flask
   *  Set middlewares, secrets and database V
-  *  Check Dockerization of Flask app
+  *  Check Dockerization of Flask app V
+  *  Check WSGI and workers on Flask (gunicorn) V
+  *  Check SMTP server on Flask
 
 ### Marlon:
   *  Check Elastic Beanstalk
   *  Check RDS for PostgreSQL
-  *  Check WSGI and workers on Flask (gunicorn)
   *  Build API for users on Flask
   *  Work deploying backend and db on AWS
   *  Review basics of CI/CD and backend pipeline (AWS)
@@ -65,7 +66,7 @@
 ### Carlos:
   *  Review basics of Redux and Session management
   *  Review basics of CI/CD and frontend pipeline (fly/heroku)
-  *  Start `frontend` folder and configure vite and TS
+  *  Start `frontend` folder and configure vite and TS V
   *  Build the `login`, `signup` and `email` pages
   *  Build the `NavBar` component
   *  Build the `user context` in React
@@ -91,7 +92,7 @@
   *  Then use `source venv/bin/activate` to start using the venv and its dependencies
   *  Run `pip install -r reqs.txt` to install the dependencies from the `reqs.txt` file
   *  Finally use `flask run` to start the dev app in default port `0.0.0.0:8000`
-  *  For production consider something steadier like `gunicorn -w 4 -b 0.0.0.0:8000 your_module_name:app`
+  *  For production consider something steadier like `gunicorn -w 4 -b 0.0.0.0:8000 main:app`
 
 ### Database:
   *  BackEnd won't start if there is no PostgreSQL DB connected at `DATABASE_URI` port, so check that
