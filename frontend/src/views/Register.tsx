@@ -20,16 +20,18 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cellphone, setCellphone] = useState("");
 
   const handleRegister = async () => {
     // This is only a basic validation of inputs. Improve this as needed.
-    if (name && email && password) {
+    if (name && email && password && cellphone) {
       try {
         await dispatch(
           register({
             name,
             email,
             password,
+            cellphone,
           })
         ).unwrap();
       } catch (e) {
@@ -92,6 +94,18 @@ const Register = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="cellphone"
+                  label="Cellphone"
+                  type="cellphone"
+                  id="cellphone"
+                  value={cellphone}
+                  onChange={(e) => setCellphone(e.target.value)}
                 />
               </Grid>
             </Grid>

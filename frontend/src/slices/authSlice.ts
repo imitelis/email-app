@@ -8,6 +8,7 @@ type User = {
 
 type NewUser = User & {
   name: string;
+  cellphone: string;
 };
 
 type UserBasicInfo = {
@@ -38,6 +39,7 @@ const initialState: AuthApiState = {
 };
 
 export const login = createAsyncThunk("login", async (data: User) => {
+  console.log(data);
   const response = await axiosInstance.post("/login", data);
   const resData = response.data;
 
@@ -47,6 +49,7 @@ export const login = createAsyncThunk("login", async (data: User) => {
 });
 
 export const register = createAsyncThunk("register", async (data: NewUser) => {
+  console.log(data);
   const response = await axiosInstance.post(
     "/register",
     data
