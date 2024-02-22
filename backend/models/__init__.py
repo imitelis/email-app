@@ -12,9 +12,6 @@ I'll try later to fix it so the files can mantain the planned hierarchy
 
 from .user_and_mail import User,Email
 
-# fake -> Delete?
-from .course import Course
-from .student import Student
 
 
 """"
