@@ -2,21 +2,15 @@ from flask_restx import Resource, Namespace
 from werkzeug.exceptions import BadRequest
 # from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask import abort
-
 from utils.database import db
 
 from bases import  UserBase, UserInputBase
 from models import User
 
+import bcrypt
+
 
 router = Namespace("users")
-
-
-'''@router.route("/hello")
-class Hellow(Resource):
-    def get(self):
-        return { "hello": "Flask RESTX"}'''
 
 
 # Starting endpoint
@@ -30,12 +24,12 @@ class UserAPI(Resource):
     # http request
     def get(self):
         '''
-        Return all the Users with their:
-            id: primary key
-            email : the user's mail
-            cellphone: the user's body
-            emails_sent: a list of the sent emails
-            emails_received: a list of the received emails
+        Returns Users with:
+            id: id
+            email: str
+            cellphone: str
+            emails_sent: [email]
+            emails_received: [email]
         '''
         return User.query.all()
     
@@ -45,17 +39,25 @@ class UserAPI(Resource):
     @router.marshal_with(UserBase)
     def post(self):
         '''
-        Creates an User with its:
-            email : the user's mail
-            cellphone: the user's body
-            password: the user's password -> should be hashed(?)
+        Creates User with:
+            email : str
+            cellphone: str
+            password: str
         '''
-        print(router.payload)
-        #TODO: Need to change this 
-        user = User(email=router.payload["email"],cellphone=router.payload["cellphone"],password=router.payload["password"],)
-        db.session.add(user)
+        user = router.payload
+        
+        db_user = User.query.filter_by(email=user["email"]).first()
+        if db_user:
+            raise BadRequest('User already exists')
+        
+        pwhash = bcrypt.hashpw(user["password"].encode('utf-8'), bcrypt.gensalt())
+        password_hash = pwhash.decode('utf8')
+
+        new_user = User(email=user["email"], cellphone=user["cellphone"], password=password_hash)
+        db.session.add(new_user)
         db.session.commit()
-        return user, 201
+        return new_user, 201
+
 
 @router.route("/<string:id>")
 class OneUserAPI(Resource):

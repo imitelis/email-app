@@ -11,11 +11,9 @@ from utils.restxapi import api
 from utils.database import db
 from utils.jwtmanager import jwt
 
-# api routers
-from routers import users_router,emails_router
 
-# not sure if necc for creating models here
-from models import Student, Course
+# api routers
+from routers import login_router, users_router,emails_router
 
 # Create the Flask app
 app = Flask(__name__)
@@ -32,6 +30,7 @@ db.init_app(app)
 jwt.init_app(app)
 
 # Register API Routers
+api.add_namespace(login_router)
 api.add_namespace(users_router)
 api.add_namespace(emails_router)
 
