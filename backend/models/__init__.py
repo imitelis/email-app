@@ -7,8 +7,8 @@ I'll try later to fix it so the files can mantain the planned hierarchy
 '''
 
 # models/__init__.py
-#from .user import User -> Try later
-#from .email import Email -> Try later
+#from .user import User # -> Try later
+#from .email import Email # -> Try later
 
 from .user_and_mail import User,Email
 
@@ -21,4 +21,4 @@ a factual object, the rest is just SQL
 There is also the Base for session dependency
 """
 
-__all__ = ["User", "Course", "Student", "Email"]
+__all__ = ["User", "Email"]

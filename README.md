@@ -35,17 +35,23 @@
   *  Basic Email Search Functionality
 
 
+## Stack
+  *  **FrontEnd:** Vite + React + TypeScript, MaterialUI
+  *  **Backend:** Flask, Flask-RESTX, Swagger / OpenAPI, SQLAlchemy, PyJWT, bcrypt
+  *  **Database:** PostgreSQL, Amazon RDS
+  *  **Quality Assurance:** (for BackEnd: PyTest, HTTPX), (for FrontEnd: Jest, Cypress)
+  *  **CI/CD:** Git Actions, Amazon Elastic Beanstalk, Amazon CloudWatch
+  *  **Deployment:** Docker, Amazon EC2
+
+
 ## Homework
 
 ### To Discuss:
   *  Docker compose or separated components (frontend and backend/db) ?
-  *  React Query or Redux
-  *  SSR or nay ?
 
-### On check:
 
 ### David:
-  *  Set ORM of user, email and email folders
+  *  Set ORM of user, email and email folders V
   *  Start `backend` folder and configure project V
   *  Check Swagger/OpenAPI on Flask V
   *  Check injection dependency on Flask V
@@ -53,15 +59,17 @@
   *  Set middlewares, secrets and database V
   *  Check Dockerization of Flask app V
   *  Check WSGI and workers on Flask (gunicorn) V
-  *  Check SMTP server on Flask
+  *  Check SMTP server on Flask V
+  *  Build unit testing on Flask
 
 ### Marlon:
   *  Check Elastic Beanstalk
   *  Check RDS for PostgreSQL
-  *  Build API for users on Flask
+  *  Build API for users on Flask V
   *  Work deploying backend and db on AWS
   *  Review basics of CI/CD and backend pipeline (AWS)
   *  Check functional tests with Flask
+  *  Build functional testing on Flask
 
 ### Carlos:
   *  Review basics of Redux and Session management

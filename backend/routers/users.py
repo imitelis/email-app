@@ -1,21 +1,31 @@
+import os
 from flask_restx import Resource, Namespace
-from werkzeug.exceptions import BadRequest
-# from werkzeug.security import generate_password_hash, check_password_hash
-
-from utils.database import db
+from werkzeug.exceptions import BadRequest, NotFound
 
 from bases import  UserBase, UserInputBase
 from models import User
 
+import uuid
 import bcrypt
+import threading
+from utils.database import db
+from utils.emailsend import send_email
 
 
 router = Namespace("users")
 
 
+FRONTEND_LINK = os.getenv("FRONTEND_LINK")
+
+def send_email_background(recipient_email, subject, body):
+    """
+    Function to send email in the background for performance
+    """
+    send_email(recipient_email, subject, body)
+
 # Starting endpoint
 @router.route("/")
-class UserAPI(Resource):
+class UsersAPI(Resource):
     '''
     Route for listing all the Users and adding one user to the database
     '''
@@ -25,12 +35,14 @@ class UserAPI(Resource):
     def get(self):
         '''
         Returns Users with:
-            id: id
+            uuid: uuid
+            full_name: str
             email: str
             cellphone: str
-            emails_sent: [email]
-            emails_received: [email]
+            emails_sent: [Email]
+            emails_received: [Email]
         '''
+
         return User.query.all()
     
     # what it expects
@@ -40,6 +52,7 @@ class UserAPI(Resource):
     def post(self):
         '''
         Creates User with:
+            full_name: str
             email : str
             cellphone: str
             password: str
@@ -52,36 +65,43 @@ class UserAPI(Resource):
         
         pwhash = bcrypt.hashpw(user["password"].encode('utf-8'), bcrypt.gensalt())
         password_hash = pwhash.decode('utf8')
+        # print(user["full_name"])
 
-        new_user = User(email=user["email"], cellphone=user["cellphone"], password=password_hash)
+        new_user = User(full_name=user["full_name"], email=user["email"], cellphone=user["cellphone"], password=password_hash)
         db.session.add(new_user)
         db.session.commit()
+
+        # SMTP part
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App account succesfully created', f'Hi {user["full_name"]}! \n\n Welcome to our Email App! We are excited to have you on board. \n Now you can login with your account here {FRONTEND_LINK} \n\n Best regards, Email App Team'))
+        email_thread.start()
+
         return new_user, 201
 
 
-@router.route("/<string:id>")
-class OneUserAPI(Resource):
+@router.route("/<string:user_uuid>")
+class UserAPI(Resource):
     '''
     Route for reading, updating or deleting one User information or update its information
     '''
     # What it returns
     @router.marshal_with(UserBase)
     # http request
-    def get(self,id):
+    def get(self, uuid):
         '''
-        Given an id return its associated user with its:
+        Returns uuid User with:
             id: id
+            full_name: str
             email: str
             cellphone: str
-            emails_sent: [email]
-            emails_received: [email]
+            emails_sent: [Email]
+            emails_received: [Email]
         '''
 
-        user= User.query.get(id)
+        user = User.query.get(uuid)
 
         #Exception when user is not found
         if not user:
-            raise BadRequest('User could not be found')
+            raise NotFound('User not be found')
 
 
         return user
@@ -90,20 +110,21 @@ class OneUserAPI(Resource):
     @router.expect(UserInputBase)
     # what it returns
     @router.marshal_with(UserBase)
-    def patch(self, id):
+    def patch(self, uuid):
         '''
-        Given an id updates its associated user with its:
+        Updates User with:
+            full_name: str
             email : str
             cellphone: str
             password: str
 
         when an empty string is passed the atribute won't be changed
         '''
-        user = User.query.get(id)
+        user = User.query.get(uuid)
         
         #Exception when user is not found
         if not user:
-            raise BadRequest('User could not be found')
+            raise NotFound('User could not be found')
         
         changed_user=router.payload
 
@@ -130,17 +151,16 @@ class OneUserAPI(Resource):
         return user, 201
     
     @router.marshal_with(UserBase)
-    def delete(self, id):
+    def delete(self, uuid):
         '''
-        Given an id deletes its associated user with its
+        Removes User:
         '''
-        user= User.query.get(id)
+        user= User.query.get(uuid)
 
         #Exception when user is not found
         if not user:
-            raise BadRequest('User could not be found')
-        
+            raise NotFound('User not found')
 
         db.session.delete(user)
         db.session.commit()
-        return user, 204
+        return None, 204
