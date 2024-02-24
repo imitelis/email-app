@@ -24,7 +24,7 @@ class Email(db.Model):
     read_date = db.Column(db.DateTime, nullable=True)
     sender_delete = db.Column(db.Boolean, default=False)
     recipient_delete = db.Column(db.Boolean, default=False)
-
+    recipient_folder = db.Column(db.Integer, default=0)
     
     email_sent = db.relationship("User", backref="emails_sent",foreign_keys=[sender_uuid])
     email_received = db.relationship("User", backref="emails_received",foreign_keys=[recipient_uuid])
