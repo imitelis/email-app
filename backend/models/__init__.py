@@ -1,17 +1,6 @@
-'''
-For the moment the foreign key capability is beign 
-implemented with the db.models in the same file: user_and_mail 
-I'll try later to fix it so the files can mantain the planned hierarchy
-
-
-'''
-
 # models/__init__.py
-#from .user import User # -> Try later
-#from .email import Email # -> Try later
-
-from .user_and_mail import User,Email
-
+from .user import User
+from .email import Email
 
 
 """"
