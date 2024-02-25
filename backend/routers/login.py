@@ -36,5 +36,5 @@ class LoginAPI(Resource):
         if not bcrypt.checkpw(user["password"].encode('utf-8'), db_user.password.encode('utf-8')):
             raise Unauthorized('Wrong credentials')
         
-        access_token = create_access_token(user["email"])
-        return {"access_token": access_token, "email": user["email"]}
+        access_token = create_access_token(user["email"], expires_delta=False)
+        return {"access_token": access_token, "email": user["email"], "full_name": db_user.full_name}

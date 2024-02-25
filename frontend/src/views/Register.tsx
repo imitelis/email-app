@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -10,19 +11,26 @@ import {
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
 
 const Register = () => {
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cellphone, setCellphone] = useState("");
+  const [error, setError] = useState("");
 
   const handleRegister = async () => {
+    setError("");
+    // This is only a basic validation of inputs. Improve this as needed.
+    if (!email || !password || !name || !cellphone){
+      setError("Please fill all the required fields*.");
+      return;
+    }
     // This is only a basic validation of inputs. Improve this as needed.
     if (name && email && password && cellphone) {
       try {
@@ -34,6 +42,7 @@ const Register = () => {
             cellphone,
           })
         ).unwrap();
+        navigate('/login')
       } catch (e) {
         console.error(e);
       }
@@ -124,6 +133,7 @@ const Register = () => {
             </Grid>
           </Box>
         </Box>
+        {error && <Alert variant="filled" severity="error">{error}</Alert>}
       </Container>
     </>
   );

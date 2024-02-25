@@ -1,75 +1,39 @@
-import React, { useState } from 'react';
+import { Paper, Typography } from '@mui/material';
+import React from 'react';
 
-import './Email.css';  
-function MailComposer() {
-    
-    console.log(import.meta.env);
-  const [email, setEmail] = useState({
-    to: '',
-    subject: '',
-    body: '',
-  });
+type EmailProps = {
+  sender: string;
+  subject: string;
+  body: string;
+};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEmail({
-      ...email,
-      [name]: value,
-    });
-  };
+const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
+  const paperRef = React.useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e) => {
-
-    e.preventDefault();
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    fetch(`${import.meta.env.VITE_BACK_URL}/email`, {
-      method: 'POST',
-        headers,
-      body: JSON.stringify(email),
-    });
-    setEmail({
-      to: '',
-      subject: '',
-      body: '',
-    });
-  };
+  React.useEffect(() => {
+    if (paperRef.current) {
+      const paperHeight = paperRef.current.clientHeight;
+      const windowHeight = window.innerHeight;
+      const newMaxHeight = windowHeight - 40; // Adjust as needed for margins
+      if (paperHeight > newMaxHeight) {
+        paperRef.current.style.maxHeight = `${newMaxHeight}px`;
+      }
+    }
+  }, [body]);
 
   return (
-    <form className='mail-composer ' onSubmit={handleSubmit}>
-      <div>
-        <label>To:</label>
-        <input
-          type="email"
-          name="to"
-          value={email.to}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Subject:</label>
-        <input
-          type="text"
-          name="subject"
-          value={email.subject}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Body:</label>
-        <textarea
-          name="body"
-          value={email.body}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <button type="submit">Send</button>
-    </form>
+    <Paper
+      elevation={3}
+      style={{ padding: '20px', margin: '20px', maxWidth: '100%', overflowY: 'auto' }}
+      ref={paperRef}
+    >
+      <Typography variant="h5">Subject: {subject}</Typography>
+      <Typography variant="subtitle1">From: {sender}</Typography>
+      <Typography variant="body1" style={{ marginTop: '10px' }}>
+        {body}
+      </Typography>
+    </Paper>
   );
-}
+};
 
-export default MailComposer;
+export default Email;

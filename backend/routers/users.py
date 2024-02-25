@@ -5,7 +5,6 @@ from werkzeug.exceptions import BadRequest, NotFound
 from bases import  UserBase, UserInputBase
 from models import User
 
-import uuid
 import bcrypt
 import threading
 from utils.database import db
@@ -43,7 +42,7 @@ class UsersAPI(Resource):
             emails_received: [Email]
         '''
 
-        return User.query.all()
+        return User.query.all(), 201
     
     # what it expects
     @router.expect(UserInputBase)
@@ -75,7 +74,7 @@ class UsersAPI(Resource):
         email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App account succesfully created', f'Hi {user["full_name"]}! \n\n Welcome to our Email App! We are excited to have you on board. \n Now you can login with your account here {FRONTEND_LINK} \n\n Best regards, Email App Team'))
         email_thread.start()
 
-        return new_user, 201
+        return new_user, 200
 
 
 @router.route("/<string:user_uuid>")
@@ -103,8 +102,7 @@ class UserAPI(Resource):
         if not user:
             raise NotFound('User not be found')
 
-
-        return user
+        return user, 201
     
     # what it expects
     @router.expect(UserInputBase)

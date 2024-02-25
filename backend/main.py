@@ -12,7 +12,7 @@ from utils.database import db
 from utils.jwtmanager import jwt
 
 # api routers
-from routers import login_router, users_router,emails_router
+from routers import login_router, me_router, users_router,emails_router
 
 # Create the Flask app
 app = Flask(__name__)
@@ -30,6 +30,7 @@ jwt.init_app(app)
 
 # Register API Routers
 api.add_namespace(login_router)
+api.add_namespace(me_router)
 api.add_namespace(users_router)
 api.add_namespace(emails_router)
 
