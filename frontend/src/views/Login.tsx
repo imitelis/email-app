@@ -11,13 +11,13 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { login } from "../slices/authSlice";
 
 const Login = () => {
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -38,6 +38,7 @@ const Login = () => {
             password,
           })
         ).unwrap();
+        navigate("/home")
       } catch (e) {
         console.error(e);
       }
@@ -107,6 +108,7 @@ const Login = () => {
         {error && <Alert variant="filled" severity="error">{error}</Alert>}
       </Container>
     </>
+    
   );
 };
 
