@@ -38,7 +38,7 @@ api.add_namespace(emails_router)
 tracemalloc.start()
 
 # Enable CORS
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Set TrustedHost
 app.config['SERVER_NAME'] = os.getenv("SERVER_NAME")
