@@ -33,8 +33,8 @@ const Home = () => {
 
   return (
     <>
-    <SideBar/>
-    {/* <NavBar/>
+      <SideBar />
+      {/* <NavBar/>
     <Inbox/>
     <Email sender={"david@gmail.com"} subject={"git"} body={"asdasdasdasdsd"}/>
       <h1>Home</h1>

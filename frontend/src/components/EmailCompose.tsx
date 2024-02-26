@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import './Email.css';  
+import "./Email.css";
 function MailComposer() {
-    
-    console.log(import.meta.env);
+  console.log(import.meta.env);
   const [email, setEmail] = useState({
-    to: '',
-    subject: '',
-    body: '',
+    to: "",
+    subject: "",
+    body: "",
   });
 
   const handleChange = (e) => {
@@ -19,25 +18,24 @@ function MailComposer() {
   };
 
   const handleSubmit = (e) => {
-
     e.preventDefault();
     const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
+    headers.append("Content-Type", "application/json");
+    headers.append("Accept", "application/json");
     fetch(`${import.meta.env.VITE_BACK_URL}/emails`, {
-      method: 'POST',
-        headers,
+      method: "POST",
+      headers,
       body: JSON.stringify(email),
     });
     setEmail({
-      to: '',
-      subject: '',
-      body: '',
+      to: "",
+      subject: "",
+      body: "",
     });
   };
 
   return (
-    <form className='mail-composer ' onSubmit={handleSubmit}>
+    <form className="mail-composer " onSubmit={handleSubmit}>
       <div>
         <label>To:</label>
         <input

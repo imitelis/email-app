@@ -8,7 +8,7 @@ from bases import  LoginBase
 from models import User
 
 
-router = Namespace("login")
+router = Namespace("api/login")
 
 
 # Starting endpoint

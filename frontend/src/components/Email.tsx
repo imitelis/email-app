@@ -1,5 +1,5 @@
-import { Paper, Typography } from '@mui/material';
-import React from 'react';
+import { Paper, Typography } from "@mui/material";
+import React from "react";
 
 type EmailProps = {
   sender: string;
@@ -24,12 +24,17 @@ const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
   return (
     <Paper
       elevation={3}
-      style={{ padding: '20px', margin: '20px', maxWidth: '100%', overflowY: 'auto' }}
+      style={{
+        padding: "20px",
+        margin: "20px",
+        maxWidth: "100%",
+        overflowY: "auto",
+      }}
       ref={paperRef}
     >
       <Typography variant="h5">Subject: {subject}</Typography>
       <Typography variant="subtitle1">From: {sender}</Typography>
-      <Typography variant="body1" style={{ marginTop: '10px' }}>
+      <Typography variant="body1" style={{ marginTop: "10px" }}>
         {body}
       </Typography>
     </Paper>

@@ -50,10 +50,7 @@ export const login = createAsyncThunk("login", async (data: User) => {
 
 export const register = createAsyncThunk("register", async (data: NewUser) => {
   console.log(data);
-  const response = await axiosInstance.post(
-    "/users",
-    data
-  );
+  const response = await axiosInstance.post("/users", data);
   const resData = response.data;
 
   localStorage.setItem("userInfo", JSON.stringify(resData));
@@ -73,11 +70,9 @@ export const logout = createAsyncThunk("logout", async () => {
 export const getUser = createAsyncThunk(
   "users/profile",
   async (userId: string) => {
-    const response = await axiosInstance.get(
-      `/users/${userId}`
-    );
+    const response = await axiosInstance.get(`/users/${userId}`);
     return response.data;
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -95,7 +90,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<UserBasicInfo>) => {
           state.status = "idle";
           state.basicUserInfo = action.payload;
-        }
+        },
       )
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -111,7 +106,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<UserBasicInfo>) => {
           state.status = "idle";
           state.basicUserInfo = action.payload;
-        }
+        },
       )
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";

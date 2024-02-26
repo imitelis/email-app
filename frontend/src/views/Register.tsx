@@ -27,7 +27,7 @@ const Register = () => {
   const handleRegister = async () => {
     setError("");
     // This is only a basic validation of inputs. Improve this as needed.
-    if (!email || !password || !name || !cellphone){
+    if (!email || !password || !name || !cellphone) {
       setError("Please fill all the required fields*.");
       return;
     }
@@ -40,7 +40,7 @@ const Register = () => {
             email,
             password,
             cellphone,
-          })
+          }),
         ).unwrap();
         // navigate('/login')
       } catch (e) {
@@ -133,7 +133,11 @@ const Register = () => {
             </Grid>
           </Box>
         </Box>
-        {error && <Alert variant="filled" severity="error">{error}</Alert>}
+        {error && (
+          <Alert variant="filled" severity="error">
+            {error}
+          </Alert>
+        )}
       </Container>
     </>
   );
