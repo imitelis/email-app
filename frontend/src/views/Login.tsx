@@ -26,6 +26,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [cookie, setCookie] = useCookies(["EmailAppToken"]);
+  // const [userEmailCookie, setUserEmailCookie] = useCookies(["EmailAppEmail"]);
+  // const [userNameCookie, setUserNameCookie] = useCookies(["EmailAppEmail"]); <- only grab first name
 
   const handleLogin = async () => {
     // Reset error state
@@ -45,7 +47,12 @@ const Login = () => {
         },
       };
 
-      console.log(email, password);
+      console.log(email, password);{
+
+      const data = {
+        email: email,
+        password: password
+      }
 
       try {
         const response = await axios.post(url, { email, password }, config);
@@ -55,9 +62,10 @@ const Login = () => {
           sameSite: "none",
           secure: true,
         });
+
         const newData = {
           email: response.data.email,
-          full_name: response.data.full_name,
+          full_name: response.data.full_name, // <- full_name.split(" ")[0]
         };
         // Stringify the JSON data before storing it in localStorage
         localStorage.setItem("EmailAppUser", JSON.stringify(newData));

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://0.0.0.0:8000/api/login";
+const baseUrl = "/api/login";
 
 interface LoginCredentials {
   email: string;

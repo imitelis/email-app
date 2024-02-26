@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for fake-mail on 2024-02-25T11:01:32-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "fake-mail"
+primary_region = "ord"
+
+[experimental]
+  auto_rollback = true
+
+[build]
+
+[env]
+  PORT = "9000"
+
+[[services.ports]]
+  handlers = ["http"]
+  port = 80
+  force_https = true
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
