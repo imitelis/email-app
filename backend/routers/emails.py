@@ -1,15 +1,21 @@
+# routers/emails.py
 import os
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
 
 import threading
-from utils.database import db
-from utils.emailsend import send_email
+from datetime import datetime
+from dotenv import load_dotenv
+from utils.db import db
+from utils.smtp import send_email
 
-from bases import  EmailBase, EmailInputBase
+from bases import  EmailBase, EmailInputBase, EmailFolderBase
 from models import User, Email
 
+
+load_dotenv()
+FRONT_URL = os.getenv("FRONT_URL")
 
 authorizations = {
     "JWTBearer": {
@@ -19,10 +25,8 @@ authorizations = {
     }
 }
 
-router = Namespace("emails", authorizations=authorizations)
+router = Namespace("api/emails", authorizations=authorizations)
 
-
-FRONTEND_LINK = os.getenv("FRONTEND_LINK")
 
 def send_email_background(recipient_email, subject, body):
     """
@@ -66,7 +70,7 @@ class EmailAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Email App New Message', f'Hi {db_recipient.full_name}! \n\n Welcome to our Email App! You have received a new message \n Now you can login with your account here {FRONTEND_LINK}/login \n\n Best regards, Email App Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Easy Email: New Email', f'Hi {db_recipient.full_name}! \n\n You have received a new message in your Easy Email inbox! \n You can continue to read it here: {FRONT_URL}/inbox \n\n Best regards, Easy Email Team'))
         email_thread.start()
 
         return new_email
@@ -134,7 +138,7 @@ class InboxEmailAPI(Resource):
     method_decorators = [jwt_required()]
     
     # What it returns
-    @router.marshal_list_with(EmailBase)
+    @router.marshal_with(EmailBase)
     # http request
     def get(self, email_uuid):
         '''
@@ -154,12 +158,12 @@ class InboxEmailAPI(Resource):
         if not db_user:
             raise BadRequest('Missing or incorrect Token')
         
-        db_email = Email.query.get(email_uuid)
+        db_email = Email.query.filter_by(uuid=email_uuid).first()
         if not db_email:
             raise NotFound('Email not found')
         
         if db_email.recipient_uuid != db_user.uuid:
-            raise BadRequest('User not authorized')
+            raise Unauthorized('User not authorized')
         
         return db_email, 201
     
@@ -202,7 +206,7 @@ class InboxEmailAPI(Resource):
     method_decorators = [jwt_required()]
     
     # What it returns
-    @router.marshal_list_with(EmailBase)
+    @router.marshal_with(EmailBase)
     # http request
     def get(self, email_uuid):
         '''
@@ -222,11 +226,81 @@ class InboxEmailAPI(Resource):
         if not db_user:
             raise BadRequest('Missing or incorrect Token')
         
-        db_email = Email.query.get(email_uuid)
+        db_email = Email.query.filter_by(uuid=email_uuid).first()
         if not db_email:
             raise NotFound('Email not found')
         
         if db_email.sender_uuid != db_user.uuid:
-            raise BadRequest('User not authorized')
+            raise Unauthorized('User not authorized')
+        
+        return db_email, 201
+    
+
+@router.doc(security="JWTBearer")
+# Starting endpoint
+@router.route("/inbox/open/<string:email_uuid>")
+class InboxEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+    
+    # What it returns
+    @router.marshal_with(EmailBase)
+    # http request
+    def patch(self, email_uuid):
+        '''
+        Updates Email read date:
+        '''
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest('Missing or incorrect Token')
+        
+        db_email = Email.query.filter_by(uuid=email_uuid).first()
+        if not db_email:
+            raise NotFound('Email not found')
+        
+        if db_email.recipient_uuid != db_user.uuid:
+            raise Unauthorized('User not authorized')
+
+        if db_email.read_date == None:
+            db_email.read_date = datetime.utcnow()
+            db.session.commit()
+        
+        return db_email, 201
+    
+
+@router.doc(security="JWTBearer")
+# Starting endpoint
+@router.route("/inbox/folder/<string:email_uuid>")
+class InboxEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+    
+    # what it expects
+    @router.expect(EmailFolderBase)
+    # What it returns
+    @router.marshal_with(EmailBase)
+    # http request
+    def patch(self, email_uuid):
+        '''
+        Updates Email recipient folder with:
+            recipient_folder: int
+        '''
+        email = router.payload
+
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest('Missing or incorrect Token')
+        
+        db_email = Email.query.filter_by(uuid=email_uuid).first()
+        if not db_email:
+            raise NotFound('Email not found')
+        
+        if db_email.recipient_uuid != db_user.uuid:
+            raise Unauthorized('User not authorized')
+
+        db_email.recipient_folder = email["recipient_folder"]
+        db.session.commit()
         
         return db_email, 201

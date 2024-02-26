@@ -5,14 +5,18 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-# tracemalloc and utils
+# utils
 import tracemalloc
-from utils.restxapi import api
-from utils.database import db
-from utils.jwtmanager import jwt
+from dotenv import load_dotenv
+from utils.api import api
+from utils.db import db
+from utils.jwt import jwt
 
 # api routers
-from routers import login_router, me_router, users_router,emails_router
+from routers import session_router, me_router, users_router, emails_router
+
+# Load .env variables
+load_dotenv()
 
 # Create the Flask app
 app = Flask(__name__)
@@ -29,7 +33,7 @@ db.init_app(app)
 jwt.init_app(app)
 
 # Register API Routers
-api.add_namespace(login_router)
+api.add_namespace(session_router)
 api.add_namespace(me_router)
 api.add_namespace(users_router)
 api.add_namespace(emails_router)
@@ -39,8 +43,6 @@ tracemalloc.start()
 
 # Enable CORS
 CORS(app) # , , ) # , allow_headers=['Content-Type']
-
-# ,, allow_headers=['Content-Type']
 
 # Set TrustedHost
 app.config['SERVER_NAME'] = os.getenv("SERVER_NAME")
