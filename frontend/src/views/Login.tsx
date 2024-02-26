@@ -47,7 +47,7 @@ const Login = () => {
         },
       };
 
-      console.log(email, password);{
+      console.log(email, password);
 
       const data = {
         email: email,

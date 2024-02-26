@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 
+
 import "./Email.css";
+import { useCookies } from "react-cookie";
 function MailComposer() {
-  console.log(import.meta.env);
+  const [cookies, setCookie] = useCookies(['EmailAppToken'])
   const [email, setEmail] = useState({
     to: "",
     subject: "",
@@ -19,10 +21,12 @@ function MailComposer() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(cookies.EmailAppToken, "cookies");
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Accept", "application/json");
-    fetch(`${import.meta.env.VITE_BACK_URL}/emails`, {
+    headers.append("Authorization", `Bearer ${cookies.EmailAppToken}`);
+    fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
       method: "POST",
       headers,
       body: JSON.stringify(email),
