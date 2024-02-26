@@ -9,11 +9,14 @@ const config = {
     }
 }
 
+/*
 let token = null;
+token = null;
 
 export const setToken = (newToken: string) => {
   token = `Bearer ${newToken}`;
 };
+*/
 
 export const getEmails = async () => {
   // add this config without removing previous one

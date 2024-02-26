@@ -13,22 +13,46 @@ jobs:
       - uses: actions/setup-node@v3 
         with:          
           node-version: '18'
-      - name: Change directory
-        run: cd frontend
+
+      - name: Check directory
+        run: |
+          cd frontend
+          pwd
+          ls -l
+      
       - name: Install dependencies
         run: npm install
+        working-directory: /home/runner/work/Email_App/frontend
+
+      - name: Lint code
+        run: npm run lint
+        working-directory: /home/runner/work/Email_App/frontend
+      
+      - name: Format code
+        run: npm run prettier
+        working-directory: /home/runner/work/Email_App/frontend
+      
       - name: Build app
         run: npm run build
+        working-directory: /home/runner/work/Email_App/frontend
+      
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
+        working-directory: /home/runner/work/Email_App/frontend
+      
       - name: Deploy flyctl
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        working-directory: /home/runner/work/Email_App/frontend
+
       - name: Visit app
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         run: |
-          app_url="https://fake-email.fly.dev/"
+          app_url="https://easy-email.fly.dev/"
           curl -I $app_url
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        working-directory: /home/runner/work/Email_App/frontend

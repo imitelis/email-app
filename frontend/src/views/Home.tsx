@@ -1,20 +1,20 @@
 import { useEffect } from "react";
-import { Button } from "@mui/material";
+// import { Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
-import { getUser, logout } from "../slices/authSlice";
-import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
-import Inbox from "../components/Inbox";
-import Email from "../components/Email";
+import { getUser } from "../slices/authSlice";
+// import { useNavigate } from "react-router-dom";
+// import Footer from "../components/Footer";
+// import NavBar from "../components/NavBar";
+// import Inbox from "../components/Inbox";
+// import Email from "../components/Email";
 import SideBar from "../components/SideBar";
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
-  const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
+  // const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
 
   useEffect(() => {
     if (basicUserInfo) {
@@ -22,6 +22,7 @@ const Home = () => {
     }
   }, [basicUserInfo, dispatch]);
 
+  /*
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
@@ -30,6 +31,7 @@ const Home = () => {
       console.error(e);
     }
   };
+  */
 
   return (
     <>

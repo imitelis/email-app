@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 
 class Email(db.Model):
-    uuid = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
+    uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     sender_uuid = db.Column(db.ForeignKey("user.uuid"))
     recipient_uuid = db.Column(db.ForeignKey("user.uuid"))
     subject = db.Column(db.String(128))

@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+// import { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,14 +7,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
+/*
 type Email = {
   sender: string;
   subject: string;
   timestamp: string;
 };
+*/
 
 export default function InboxTable() {
-  const [emails, setEmails] = useState<Email[]>([]);
+  // const [emails, setEmails] = useState<Email[]>([]);
 
   //   useEffect(() => {
   //     // Fetch emails from API using Axios
@@ -39,13 +40,15 @@ export default function InboxTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {emails.map((email, index) => (
+          {/*
+          emails.map((email, index) => (
             <TableRow key={index}>
               <TableCell>{email.sender}</TableCell>
               <TableCell>{email.subject}</TableCell>
               <TableCell>{email.timestamp}</TableCell>
             </TableRow>
-          ))}
+          ))
+          */}
         </TableBody>
       </Table>
     </TableContainer>
