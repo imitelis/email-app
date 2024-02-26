@@ -120,7 +120,7 @@ export default function SideBar() {
   };
 
   const _clickOptiopn = (evt) => {
-    navigate(`/email/${evt.route}`);
+    navigate(`/home/${evt.route}`);
   };
 
   return (

@@ -16,7 +16,7 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
         <Route element={<ProtectedLayout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home/*" element={<Home />} />
         </Route>
       </Routes>
       <Footer />
