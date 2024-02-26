@@ -1,6 +1,6 @@
 # bases/__init__.py
-from .user import UserBase, LoginBase, UserInputBase
-from .email import EmailBase, EmailInputBase
+from .user import InviteBase, LoginBase, UserBase, UserInputBase
+from .email import EmailBase, EmailInputBase, EmailFolderBase
 
 
 """"
@@ -9,4 +9,4 @@ to our models, but not all fields are
 here, since they consider user input
 """
 
-__all__ = ["LoginBase", "CourseBase", "CourseInputBase", "StudentBase", "StudentInputBase","UserBase","UserInputBase","EmailBase", "EmailInputBase"]
+__all__ = ["InviteBase", "LoginBase", "UserBase","UserInputBase", "EmailBase", "EmailInputBase", "EmailFolderBase"]

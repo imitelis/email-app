@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from utils.database import db
+from utils.db import db
 from sqlalchemy.orm import relationship
 
 
@@ -15,6 +15,18 @@ class Email(db.Model):
     # sender_delete = db.Column(db.Boolean, default=False)
     # recipient_delete = db.Column(db.Boolean, default=False)
     recipient_folder = db.Column(db.Integer, default=0)
-
     sender = relationship('User', foreign_keys=[sender_uuid])
     recipient = relationship('User', foreign_keys=[recipient_uuid])
+    
+
+    def __init__(self, subject, body, recipient_folder):
+        if len(subject) > 128:
+            raise ValueError("Subject must be at most 128 characters long.")
+        
+        if len(body) > 1028:
+            raise ValueError("Body must be at most 1028 characters long.")
+        
+        if recipient_folder > 4:
+            raise ValueError("Recipient folder must be at most 4.")
+        
+        super().__init__(subject=subject, body=body, recipient_folder=recipient_folder)

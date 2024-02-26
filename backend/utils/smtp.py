@@ -1,13 +1,15 @@
-# emailsend.py
+# smtp.py
 import os
 import ssl
 import smtplib
+from dotenv import load_dotenv
 
-
+load_dotenv()
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = os.getenv("SMTP_PORT")
+
 
 def send_email(receiver_email, subject, body):
     message = f"Subject: {subject}\n\n{body}"

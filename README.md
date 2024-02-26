@@ -55,16 +55,16 @@
   *  Start `backend` folder and configure project V
   *  Check Swagger/OpenAPI on Flask V
   *  Check injection dependency on Flask V
-  *  Build login and secured emails API on Flask
+  *  Build login and secured emails API on Flask V
   *  Set middlewares, secrets and database V
   *  Check Dockerization of Flask app V
   *  Check WSGI and workers on Flask (gunicorn) V
   *  Check SMTP server on Flask V
-  *  Build unit testing on Flask
+  *  Build unit testing on Flask V
 
 ### Marlon:
   *  Check Elastic Beanstalk
-  *  Check RDS for PostgreSQL
+  *  Check RDS for PostgreSQL V
   *  Build API for users on Flask V
   *  Work deploying backend and db on AWS
   *  Review basics of CI/CD and backend pipeline (AWS)
@@ -73,10 +73,10 @@
 
 ### Carlos:
   *  Review basics of Redux and Session management
-  *  Review basics of CI/CD and frontend pipeline (fly/heroku)
+  *  Review basics of CI/CD and frontend pipeline (fly/heroku) V
   *  Start `frontend` folder and configure vite and TS V
   *  Build the `login`, `signup` and `email` pages
-  *  Build the `NavBar` component
+  *  Build the `NavBar` component V
   *  Build the `user context` in React
 
 ### Angel:
@@ -106,3 +106,10 @@
   *  BackEnd won't start if there is no PostgreSQL DB connected at `DATABASE_URI` port, so check that
   *  For simplicity, we consider an empty `emaildb` now, we can eventually think of dockerization
   *  You might use pgAdmin 4 and after setting your username and password, create new db there
+  
+### Testing BackEnd:
+  *  Start similar setup as backend located in the same folder "backend"
+  *  Run `export PYTHONPATH=$(pwd)` to set the modules in the tests files
+  *  Then run `python3 tests/unit_user.py` and then `python3 tests/unit_email.py` for the unit tests
+  
+  

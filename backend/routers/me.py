@@ -1,9 +1,11 @@
+# routers/me.py
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.exceptions import NotFound
 
 from bases import  UserBase
 from models import User
+
 
 authorizations = {
     "JWTBearer": {
@@ -13,7 +15,8 @@ authorizations = {
     }
 }
 
-router = Namespace("me", authorizations=authorizations)
+router = Namespace("api/me", authorizations=authorizations)
+
 
 @router.doc(security="JWTBearer")
 # Starting endpoint
@@ -32,9 +35,7 @@ class InboxEmailAPI(Resource):
             email: str
             cellphone: str
         '''
-        print('see me here')
-        print(get_jwt_identity())
-
+        # print(get_jwt_identity())
         jwt_email = get_jwt_identity()
 
         db_user = User.query.filter_by(email=jwt_email).first()

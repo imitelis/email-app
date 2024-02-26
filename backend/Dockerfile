@@ -21,4 +21,4 @@ RUN pip install -r reqs.txt
 EXPOSE 8000
 
 # Run our Flask server using gunicorn
-CMD ["gunicorn", "-w 4 -b", "0.0.0.0:8000", "main:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "main:app"]

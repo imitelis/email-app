@@ -1,4 +1,4 @@
-import os
+# routers/users.py
 from flask_restx import Resource, Namespace
 from werkzeug.exceptions import BadRequest, NotFound
 
@@ -6,27 +6,17 @@ from bases import  UserBase, UserInputBase
 from models import User
 
 import bcrypt
-import threading
-from utils.database import db
-from utils.emailsend import send_email
+from utils.db import db
 
 
-router = Namespace("users")
+router = Namespace("api/users")
 
-
-FRONTEND_LINK = os.getenv("FRONTEND_LINK")
-
-def send_email_background(recipient_email, subject, body):
-    """
-    Function to send email in the background for performance
-    """
-    send_email(recipient_email, subject, body)
 
 # Starting endpoint
 @router.route("/")
 class UsersAPI(Resource):
     '''
-    Route for listing all the Users and adding one user to the database
+    Route for listing all the Users
     '''
     # What it returns
     @router.marshal_list_with(UserBase)
@@ -43,38 +33,6 @@ class UsersAPI(Resource):
         '''
 
         return User.query.all(), 201
-    
-    # what it expects
-    @router.expect(UserInputBase)
-    # what it returns
-    @router.marshal_with(UserBase)
-    def post(self):
-        '''
-        Creates User with:
-            full_name: str
-            email : str
-            cellphone: str
-            password: str
-        '''
-        user = router.payload
-        
-        db_user = User.query.filter_by(email=user["email"]).first()
-        if db_user:
-            raise BadRequest('User already exists')
-        
-        pwhash = bcrypt.hashpw(user["password"].encode('utf-8'), bcrypt.gensalt())
-        password_hash = pwhash.decode('utf8')
-        # print(user["full_name"])
-
-        new_user = User(full_name=user["full_name"], email=user["email"], cellphone=user["cellphone"], password=password_hash)
-        db.session.add(new_user)
-        db.session.commit()
-
-        # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App account succesfully created', f'Hi {user["full_name"]}! \n\n Welcome to our Email App! We are excited to have you on board. \n Now you can login with your account here {FRONTEND_LINK} \n\n Best regards, Email App Team'))
-        email_thread.start()
-
-        return new_user, 200
 
 
 @router.route("/<string:user_uuid>")
