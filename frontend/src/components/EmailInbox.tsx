@@ -8,7 +8,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getEmails } from "../slices/mailSlice";
+import { getEmails } from "../slices/emailSlice";
 interface Email {
   uuid: string;
   sender: {
