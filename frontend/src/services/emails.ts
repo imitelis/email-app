@@ -1,6 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 
-const baseUrl = "/api/emails";
+// const baseUrl = "/api/emails";
 
 const config = {
   headers: {
