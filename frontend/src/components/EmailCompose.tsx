@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import "./Email.css";
 function MailComposer() {
@@ -9,7 +9,7 @@ function MailComposer() {
     body: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const { name, value } = e.target;
     setEmail({
       ...email,
@@ -17,7 +17,7 @@ function MailComposer() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
@@ -61,7 +61,7 @@ function MailComposer() {
         <textarea
           name="body"
           value={email.body}
-          onChange={handleChange}
+          /* onChange={handleChange} */
           required
         />
       </div>

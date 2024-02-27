@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for fake-mail on 2024-02-25T11:01:32-05:00
+# fly.toml app configuration file generated for easy-email on 2024-02-26T17:16:31-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "fake-mail"
-primary_region = "ord"
+app = 'easy-email'
+primary_region = 'ord'
 
 [experimental]
   auto_rollback = true
@@ -12,7 +12,7 @@ primary_region = "ord"
 [build]
 
 [env]
-  PORT = "9000"
+  PORT = "8080"
 
 [[services.ports]]
   handlers = ["http"]
@@ -21,6 +21,7 @@ primary_region = "ord"
 
 [http_service]
   internal_port = 8080
+  internal_address = "0.0.0.0"
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

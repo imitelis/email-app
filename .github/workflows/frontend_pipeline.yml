@@ -1,34 +1,63 @@
 name: FrontEnd Pipeline
 
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  simple_deployment_pipeline:    
+  frontend_pipeline:    
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3 
         with:          
           node-version: '18'
-      - name: Change directory
-        run: cd frontend
+
+      - name: Check directory
+        run: |
+          cd frontend
+          pwd
+          ls -l
+
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd frontend
+          npm install
+        
+      - name: Lint code
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Format code
+        run: |
+          cd frontend
+          npm run prettier
+      
       - name: Build app
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
+      
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
+
       - name: Deploy flyctl
-        run: flyctl deploy --remote-only
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        run: |
+          cd frontend
+          flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+
       - name: Visit app
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         run: |
-          app_url="https://fake-email.fly.dev/"
+          app_url="https://easy-email.fly.dev/"
           curl -I $app_url
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        working-directory: /home/runner/work/testing_repo/testing_repo/frontend

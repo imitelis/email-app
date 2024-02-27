@@ -32,9 +32,6 @@ const Login = () => {
   // const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    // Reset error state
-    setError("");
-    // This is only a basic validation of inputs. Improve this as needed.
     if (!email || !password) {
       setError("Please provide both email and password.");
       return;
@@ -51,8 +48,6 @@ const Login = () => {
       } catch (e) {
         console.error(e);
       }
-    } else {
-      // Show an error message.
     }
   };
 

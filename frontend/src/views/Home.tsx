@@ -10,7 +10,7 @@ import SideBar from "../components/SideBar";
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
   const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
@@ -21,6 +21,7 @@ const Home = () => {
   //   }
   // }, [basicUserInfo, dispatch]);
 
+  /*
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
@@ -29,6 +30,7 @@ const Home = () => {
       console.error(e);
     }
   };
+  */
 
   return (
     <>
