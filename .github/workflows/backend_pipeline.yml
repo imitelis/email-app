@@ -1,4 +1,4 @@
-name: BackEnd Pipeline
+name: FrontEnd Pipeline
 
 
 on:
@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  backend_pipeline:    
+  backend_job: 
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -48,5 +48,5 @@ jobs:
           export PYTHONPATH=$(pwd)
           python3 tests/unit_email.py
       
-      - name: Start server
+      # - name: Start server
         # run: flask run

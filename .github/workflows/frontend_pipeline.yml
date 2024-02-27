@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  frontend_pipeline:    
+  frontend_job:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -61,4 +61,3 @@ jobs:
           curl -I $app_url
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-        working-directory: /home/runner/work/testing_repo/testing_repo/frontend
