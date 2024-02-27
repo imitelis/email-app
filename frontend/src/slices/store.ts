@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import userReducer from "./userSlice";
+import { emailsReducer } from "./mailSlice";
 
 const store = configureStore({
   reducer: {
+    emails: emailsReducer,
     auth: authReducer,
     user: userReducer,
   },
@@ -12,4 +14,4 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export default store;
+export default store; 
