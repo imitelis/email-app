@@ -11,23 +11,25 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+// import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 
-import axios from "axios";
-
-import loginService from "../services/login";
+import { login } from "../slices/authSlice";
 
 const Login = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [cookie, setCookie] = useCookies(["EmailAppToken"]);
+  // const [cookie, setCookie] = useCookies(["EmailAppToken"]);
   // const [userEmailCookie, setUserEmailCookie] = useCookies(["EmailAppEmail"]);
   // const [userNameCookie, setUserNameCookie] = useCookies(["EmailAppEmail"]); <- only grab first name
+
+  // const dispatch = useAppDispatch();
+
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     // Reset error state
@@ -37,48 +39,73 @@ const Login = () => {
       setError("Please provide both email and password.");
       return;
     }
+    // This is only a basic validation of inputs. Improve this as needed.
     if (email && password) {
-      const url = "http://0.0.0.0:8000/api/login/";
-
-      const config = {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-
-      console.log(email, password);{
-
-      const data = {
-        email: email,
-        password: password
-      }
-
       try {
-        const response = await axios.post(url, { email, password }, config);
-        console.log("Login successful:", response.data);
-        setCookie("EmailAppToken", response.data.access_token, {
-          path: "/",
-          sameSite: "none",
-          secure: true,
-        });
-
-        const newData = {
-          email: response.data.email,
-          full_name: response.data.full_name, // <- full_name.split(" ")[0]
-        };
-        // Stringify the JSON data before storing it in localStorage
-        localStorage.setItem("EmailAppUser", JSON.stringify(newData));
-
-        // Redirect or perform other actions upon successful login
-      } catch (error) {
-        console.error("Login failed:", error);
-        setError("Failed to login. Please try again."); // Set error message
+        await dispatch(
+          login({
+            email,
+            password,
+          })
+        ).unwrap();
+      } catch (e) {
+        console.error(e);
       }
     } else {
       // Show an error message.
     }
   };
+
+  // const handleLogin = async () => {
+  //   // Reset error state
+  //   setError("");
+  //   // This is only a basic validation of inputs. Improve this as needed.
+  //   if (!email || !password) {
+  //     setError("Please provide both email and password.");
+  //     return;
+  //   }
+  //   if (email && password) {
+  //     const url = "http://0.0.0.0:8000/api/login";
+
+  //     const config = {
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //     };
+
+  //     console.log(email, password);
+
+  //     const data = {
+  //       email: email,
+  //       password: password,
+  //     };
+
+  //     try {
+  //       const response = await axios.post(url, { email, password }, config);
+  //       console.log("Login successful:", response.data);
+  //       setCookie("EmailAppToken", response.data.access_token, {
+  //         path: "/",
+  //         sameSite: "none",
+  //         secure: true,
+  //       });
+
+  //       const newData = {
+  //         email: response.data.email,
+  //         full_name: response.data.full_name, // <- full_name.split(" ")[0]
+  //       };
+  //       // Stringify the JSON data before storing it in localStorage
+  //       localStorage.setItem("EmailAppUser", JSON.stringify(newData));
+
+  //       // Redirect or perform other actions upon successful login
+  //     } catch (error) {
+  //       console.error("Login failed:", error);
+  //       setError("Failed to login. Please try again."); // Set error message
+  //     }
+  //   } else {
+  //     // Show an error message.
+  //   }
+  // };
 
   return (
     <>

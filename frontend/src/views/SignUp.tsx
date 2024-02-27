@@ -11,14 +11,14 @@ import {
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
 
 const Register = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const [name, setName] = useState("");
+  // const navigate = useNavigate();
+  const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cellphone, setCellphone] = useState("");
@@ -27,22 +27,21 @@ const Register = () => {
   const handleRegister = async () => {
     setError("");
     // This is only a basic validation of inputs. Improve this as needed.
-    if (!email || !password || !name || !cellphone) {
+    if (!email || !password || !full_name || !cellphone) {
       setError("Please fill all the required fields*.");
       return;
     }
     // This is only a basic validation of inputs. Improve this as needed.
-    if (name && email && password && cellphone) {
+    if (full_name && email && password && cellphone) {
       try {
         await dispatch(
           register({
-            name,
+            full_name,
             email,
             password,
             cellphone,
-          }),
+          })
         ).unwrap();
-        // navigate('/login')
       } catch (e) {
         console.error(e);
       }
@@ -77,8 +76,8 @@ const Register = () => {
                   id="name"
                   label="Name"
                   autoFocus
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={full_name}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </Grid>
 

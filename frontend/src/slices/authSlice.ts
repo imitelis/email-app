@@ -7,7 +7,7 @@ type User = {
 };
 
 type NewUser = User & {
-  name: string;
+  full_name: string;
   cellphone: string;
 };
 
@@ -42,18 +42,26 @@ export const login = createAsyncThunk("login", async (data: User) => {
   console.log(data);
   const response = await axiosInstance.post("/login", data);
   const resData = response.data;
+  const newData = {
+    email: response.data.email,
+    full_name: response.data.full_name, // <- full_name.split(" ")[0]
+  };
 
-  localStorage.setItem("userInfo", JSON.stringify(resData));
+  localStorage.setItem("userInfo", JSON.stringify(newData));
 
   return resData;
 });
 
 export const register = createAsyncThunk("register", async (data: NewUser) => {
   console.log(data);
-  const response = await axiosInstance.post("/users", data);
+  const response = await axiosInstance.post("/signup", data);
   const resData = response.data;
+  const newData = {
+    email: response.data.email,
+    full_name: response.data.full_name, // <- full_name.split(" ")[0]
+  };
 
-  localStorage.setItem("userInfo", JSON.stringify(resData));
+  localStorage.setItem("userInfo", JSON.stringify(newData));
 
   return resData;
 });
@@ -67,13 +75,13 @@ export const logout = createAsyncThunk("logout", async () => {
   return resData;
 });
 
-export const getUser = createAsyncThunk(
-  "users/profile",
-  async (userId: string) => {
-    const response = await axiosInstance.get(`/users/${userId}`);
-    return response.data;
-  },
-);
+// export const getUser = createAsyncThunk(
+//   "users/profile",
+//   async (userId: string) => {
+//     const response = await axiosInstance.get(`/users/${userId}`);
+//     return response.data;
+//   },
+// );
 
 const authSlice = createSlice({
   name: "auth",
@@ -90,7 +98,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<UserBasicInfo>) => {
           state.status = "idle";
           state.basicUserInfo = action.payload;
-        },
+        }
       )
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -106,38 +114,38 @@ const authSlice = createSlice({
         (state, action: PayloadAction<UserBasicInfo>) => {
           state.status = "idle";
           state.basicUserInfo = action.payload;
-        },
+        }
       )
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Registration failed";
-      })
-
-      .addCase(logout.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(logout.fulfilled, (state) => {
-        state.status = "idle";
-        state.basicUserInfo = null;
-      })
-      .addCase(logout.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Logout failed";
-      })
-
-      .addCase(getUser.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(getUser.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.userProfileData = action.payload;
-      })
-      .addCase(getUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Get user profile data failed";
       });
+
+    // .addCase(logout.pending, (state) => {
+    //   state.status = "loading";
+    //   state.error = null;
+    // })
+    // .addCase(logout.fulfilled, (state) => {
+    //   state.status = "idle";
+    //   state.basicUserInfo = null;
+    // })
+    // .addCase(logout.rejected, (state, action) => {
+    //   state.status = "failed";
+    //   state.error = action.error.message || "Logout failed";
+    // })
+
+    // .addCase(getUser.pending, (state) => {
+    //   state.status = "loading";
+    //   state.error = null;
+    // })
+    // .addCase(getUser.fulfilled, (state, action) => {
+    //   state.status = "idle";
+    //   state.userProfileData = action.payload;
+    // })
+    // .addCase(getUser.rejected, (state, action) => {
+    //   state.status = "failed";
+    //   state.error = action.error.message || "Get user profile data failed";
+    // })
   },
 });
 
