@@ -42,7 +42,7 @@ const Register = () => {
             cellphone,
           }),
         ).unwrap();
-        // navigate('/login')
+        navigate("/login");
       } catch (e) {
         console.error(e);
       }

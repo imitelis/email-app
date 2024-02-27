@@ -24,12 +24,17 @@ import EmailList from "./EmailInbox";
 
 const drawerWidth = 240;
 
-export const itemsMenu = [
+const itemsMenu: {
+  id: string;
+  route: string;
+  name: string;
+  component: JSX.Element;
+}[] = [
   {
     id: "inbox",
     route: "",
     name: "Inbox",
-    component: <EmailList/>
+    component: <EmailList />,
   },
   {
     id: "send-email",
@@ -120,7 +125,11 @@ export default function SideBar() {
     setOpen(false);
   };
 
-  const _clickOptiopn = (evt) => {
+  interface evtType {
+    route: string;
+  }
+
+  const _clickOptiopn = (evt: evtType) => {
     navigate(`/home/${evt.route}`);
   };
 

@@ -1,19 +1,22 @@
-import axios from "axios";
+// import axios from "axios";
 
-const baseUrl = "/api/emails";
+// const baseUrl = "/api/emails";
 
-const config = {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    }
-}
+// const config = {
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     }
+// }
 
+/*
 let token = null;
+token = null;
 
 export const setToken = (newToken: string) => {
   token = `Bearer ${newToken}`;
 };
+*/
 
 // export const getEmails = async () => {
 //   // add this config without removing previous one

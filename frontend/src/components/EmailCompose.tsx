@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useCookies } from "react-cookie";
-import axiosInstance from "../services/api-client";
-import { useDispatch } from "react-redux";
-import { getEmails } from "../slices/mailSlice";
 
 function MailComposer() {
-  const [cookies, setCookie] = useCookies(['EmailAppToken'])
+  const [cookies] = useCookies(["EmailAppToken"]);
   const [email, setEmail] = useState({
     to: "",
     subject: "",
     body: "",
   });
 
-  const handleChange = (e:any) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setEmail({
       ...email,
@@ -21,23 +18,17 @@ function MailComposer() {
     });
   };
 
-  
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // const headers = new Headers();
-    // headers.append("Content-Type", "application/json");
-    // headers.append("Accept", "application/json");
-    // headers.append("Authorization", `Bearer ${cookies.EmailAppToken}`);
-    // fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
-    //   method: "POST",
-    //   headers,
-    //   body: JSON.stringify(email),
-    // });
-    
-
-
-    
-
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Accept", "application/json");
+    headers.append("Authorization", `Bearer ${cookies.EmailAppToken}`);
+    fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(email),
+    });
     setEmail({
       to: "",
       subject: "",
@@ -46,7 +37,10 @@ function MailComposer() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+    >
       <TextField
         label="To"
         type="email"
@@ -72,7 +66,9 @@ function MailComposer() {
         multiline
         rows={4}
       />
-      <Button variant="contained" type="submit" color="primary">Send</Button>
+      <Button variant="contained" type="submit" color="primary">
+        Send
+      </Button>
     </form>
   );
 }

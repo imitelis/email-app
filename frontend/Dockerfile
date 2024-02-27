@@ -20,5 +20,5 @@ COPY . .
 RUN npm run build
 
 # Start the server by default, this can be overwritten at runtime
-EXPOSE 9000
+EXPOSE 8080
 CMD [ "npm", "run", "preview" ]

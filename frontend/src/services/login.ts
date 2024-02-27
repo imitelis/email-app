@@ -8,15 +8,15 @@ interface LoginCredentials {
 }
 
 const config = {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    }
-}
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+};
 
 const login = async (credentials: LoginCredentials) => {
   const response = await axios.post(baseUrl, credentials, config);
-  console.log(response)
+  console.log(response);
   return response.data;
 };
 
