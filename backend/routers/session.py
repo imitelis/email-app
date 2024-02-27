@@ -39,7 +39,7 @@ class InviteAPI(Resource):
         Greet client side:
         '''
         
-        return {"Success": "Hello from the Easy Email server"}, 200
+        return {"success": "Hello from the Easy Email server"}, 200
 
 
 # Starting endpoint
@@ -62,7 +62,7 @@ class InviteAPI(Resource):
         email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Easy Email: Invitation', f'Hi there! \n\n Someone has invited you to join Easy Email! \n You can create your new account here: {APP_URL}/signup \n\n Best regards, Easy Email Team'))
         email_thread.start()
         
-        return {"Success": "Email was invited to Easy Email"}, 200
+        return {"success": "Invitation email was sent to join Easy Email"}, 200
 
 
 # Starting endpoint

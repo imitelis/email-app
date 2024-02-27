@@ -31,7 +31,7 @@ jobs:
           cd frontend
           npm run lint
 
-      - name: Format code
+      - name: Prettier code
         run: |
           cd frontend
           npm run prettier

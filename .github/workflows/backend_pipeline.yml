@@ -1,4 +1,4 @@
-name: FrontEnd Pipeline
+name: BackEnd Pipeline
 
 
 on:
@@ -26,7 +26,7 @@ jobs:
           cd backend
           python3 -m venv venv
       
-      - name: Activate environment
+      - name: Activate venv
         run: |
           cd backend
           source venv/bin/activate
@@ -35,6 +35,11 @@ jobs:
         run: |
           cd backend
           pip install -r reqs.txt
+      
+      - name: Outdated dependencies
+        run: |
+          cd backend
+          pip list --outdated
 
       - name: Unittest user
         run: |
@@ -47,6 +52,28 @@ jobs:
           cd backend
           export PYTHONPATH=$(pwd)
           python3 tests/unit_email.py
-      
+
+      - name: Pytest API
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          pytest -s
+        env:
+          FLASK_APP: ${{ secrets.FLASK_APP }}
+          FLASK_ENV: ${{ secrets.FLASK_ENV }}
+          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
+          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
+          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          SERVER_NAME: ${{ secrets.SERVER_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          APP_URL: ${{ secrets.APP_URL }}
+          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+
       # - name: Start server
         # run: flask run
