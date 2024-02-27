@@ -32,7 +32,7 @@ class UsersAPI(Resource):
             emails_received: [Email]
         '''
 
-        return User.query.all(), 201
+        return User.query.all(), 200
 
 
 @router.route("/<string:user_uuid>")
@@ -60,7 +60,7 @@ class UserAPI(Resource):
         if not user:
             raise NotFound('User not be found')
 
-        return user, 201
+        return user, 200
     
     # what it expects
     @router.expect(UserInputBase)
@@ -104,7 +104,7 @@ class UserAPI(Resource):
             user.password=password_hash
 
         db.session.commit()
-        return user, 201
+        return user, 200
     
     @router.marshal_with(UserBase)
     def delete(self, uuid):

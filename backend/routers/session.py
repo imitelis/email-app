@@ -15,7 +15,7 @@ from utils.smtp import send_email
 
 
 load_dotenv()
-FRONT_URL = os.getenv("FRONT_URL")
+APP_URL = os.getenv("APP_URL")
 
 router = Namespace("api")
 
@@ -39,7 +39,7 @@ class InviteAPI(Resource):
         Greet client side:
         '''
         
-        return {"Success": "Hello from the Easy Email server"}, 201
+        return {"Success": "Hello from the Easy Email server"}, 200
 
 
 # Starting endpoint
@@ -59,10 +59,10 @@ class InviteAPI(Resource):
         user = router.payload
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Easy Email: Invitation', f'Hi there! \n\n Someone has invited you to join Easy Email! \n You can create your new account here: {FRONT_URL}/signup \n\n Best regards, Easy Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Easy Email: Invitation', f'Hi there! \n\n Someone has invited you to join Easy Email! \n You can create your new account here: {APP_URL}/signup \n\n Best regards, Easy Email Team'))
         email_thread.start()
         
-        return {"Success": "Email was invited to Easy Email"}, 201
+        return {"Success": "Email was invited to Easy Email"}, 200
 
 
 # Starting endpoint
@@ -91,7 +91,7 @@ class LoginAPI(Resource):
             raise Unauthorized('Wrong credentials')
         
         access_token = create_access_token(user["email"], expires_delta=False)
-        return {"access_token": access_token, "email": user["email"], "full_name": db_user.full_name}, 201
+        return {"access_token": access_token, "email": user["email"], "full_name": db_user.full_name}, 200
     
 
 # Starting endpoint
@@ -128,7 +128,7 @@ class SignUpAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Easy Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {FRONT_URL}/login \n\n Best regards, Easy Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Easy Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {APP_URL}/login \n\n Best regards, Easy Email Team'))
         email_thread.start()
 
-        return new_user, 200
+        return new_user, 201

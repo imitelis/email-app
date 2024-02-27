@@ -30,7 +30,7 @@ const Login = () => {
       setError("Please provide both email and password.");
       return;
     } else if (email && password) {
-      const url = "http://0.0.0.0:8000/api/login/";
+      const url = "/api/login"; // <= notice how I dont hardwrite the proxy URL anymore
 
       const config = {
         headers: {
@@ -38,37 +38,34 @@ const Login = () => {
           "Content-Type": "application/json",
         },
       };
-      
-      const data = {
-        email: email,
-        password: password
-      }
+
+      console.log(email, password);
 
       try {
-        const response = await axios.post(url, data, config);
+        const response = await axios.post(url, { email, password }, config);
+        console.log(response);
+        console.log(url);
         console.log("Login successful:", response.data);
         setCookie("EmailAppToken", response.data.access_token, {
           path: "/",
           sameSite: "none",
           secure: true,
         });
-
         const newData = {
           email: response.data.email,
-          full_name: response.data.full_name, // <- full_name.split(" ")[0]
+          full_name: response.data.full_name,
         };
         // Stringify the JSON data before storing it in localStorage
         localStorage.setItem("EmailAppUser", JSON.stringify(newData));
 
         // Redirect or perform other actions upon successful login
-        navigate("/inbox")
+        navigate("/inbox");
       } catch (error) {
         console.error("Login failed:", error);
         setError("Failed to login. Please try again."); // Set error message
       }
     }
-      
-  }  
+  };
 
   return (
     <>

@@ -3,11 +3,11 @@ import axios from "axios";
 const baseUrl = "/api/emails";
 
 const config = {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    }
-}
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+};
 
 /*
 let token = null;
