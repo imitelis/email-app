@@ -15,7 +15,7 @@ from models import User, Email
 
 
 load_dotenv()
-FRONT_URL = os.getenv("FRONT_URL")
+APP_URL = os.getenv("APP_URL")
 
 authorizations = {
     "JWTBearer": {
@@ -70,10 +70,10 @@ class EmailAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Easy Email: New Email', f'Hi {db_recipient.full_name}! \n\n You have received a new message in your Easy Email inbox! \n You can continue to read it here: {FRONT_URL}/inbox \n\n Best regards, Easy Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Easy Email: New Email', f'Hi {db_recipient.full_name}! \n\n You have received a new message in your Easy Email inbox! \n You can continue to read it here: {APP_URL}/inbox \n\n Best regards, Easy Email Team'))
         email_thread.start()
 
-        return new_email
+        return new_email, 201
     
     # What it returns
     @router.marshal_list_with(EmailBase)
@@ -97,7 +97,7 @@ class EmailAPI(Resource):
             raise BadRequest('Missing or incorrect Token')
         
         user_emails = Email.query.all()
-        return user_emails
+        return user_emails, 200
     
 
 @router.doc(security="JWTBearer")
@@ -128,7 +128,7 @@ class InboxEmailAPI(Resource):
             raise BadRequest('Missing or incorrect Token')
         
         user_emails = Email.query.filter_by(recipient_uuid=db_user.uuid).all()
-        return user_emails
+        return user_emails, 200
     
 
 @router.doc(security="JWTBearer")
@@ -165,7 +165,7 @@ class InboxEmailAPI(Resource):
         if db_email.recipient_uuid != db_user.uuid:
             raise Unauthorized('User not authorized')
         
-        return db_email, 201
+        return db_email, 200
     
 
 @router.doc(security="JWTBearer")
@@ -196,7 +196,7 @@ class SentEmailAPI(Resource):
             raise BadRequest('Missing or incorrect Token')
         
         user_emails = Email.query.filter_by(sender_uuid=db_user.uuid).all()
-        return user_emails
+        return user_emails, 200
     
 
 @router.doc(security="JWTBearer")
@@ -233,7 +233,7 @@ class InboxEmailAPI(Resource):
         if db_email.sender_uuid != db_user.uuid:
             raise Unauthorized('User not authorized')
         
-        return db_email, 201
+        return db_email, 200
     
 
 @router.doc(security="JWTBearer")
@@ -266,7 +266,7 @@ class InboxEmailAPI(Resource):
             db_email.read_date = datetime.utcnow()
             db.session.commit()
         
-        return db_email, 201
+        return db_email, 200
     
 
 @router.doc(security="JWTBearer")
@@ -303,4 +303,4 @@ class InboxEmailAPI(Resource):
         db_email.recipient_folder = email["recipient_folder"]
         db.session.commit()
         
-        return db_email, 201
+        return db_email, 200

@@ -1,15 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { TextField, Button } from "@mui/material";
+import { useCookies } from "react-cookie";
 
-import "./Email.css";
 function MailComposer() {
-  console.log(import.meta.env);
+  const [cookies] = useCookies(["EmailAppToken"]);
   const [email, setEmail] = useState({
     to: "",
     subject: "",
     body: "",
   });
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setEmail({
       ...email,
@@ -17,12 +18,13 @@ function MailComposer() {
     });
   };
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Accept", "application/json");
-    fetch(`${import.meta.env.VITE_BACK_URL}/emails`, {
+    headers.append("Authorization", `Bearer ${cookies.EmailAppToken}`);
+    fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
       method: "POST",
       headers,
       body: JSON.stringify(email),
@@ -35,37 +37,38 @@ function MailComposer() {
   };
 
   return (
-    <form className="mail-composer " onSubmit={handleSubmit}>
-      <div>
-        <label>To:</label>
-        <input
-          type="email"
-          name="to"
-          value={email.to}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Subject:</label>
-        <input
-          type="text"
-          name="subject"
-          value={email.subject}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Body:</label>
-        <textarea
-          name="body"
-          value={email.body}
-          /* onChange={handleChange} */
-          required
-        />
-      </div>
-      <button type="submit">Send</button>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+    >
+      <TextField
+        label="To"
+        type="email"
+        name="to"
+        value={email.to}
+        onChange={handleChange}
+        required
+      />
+      <TextField
+        label="Subject"
+        type="text"
+        name="subject"
+        value={email.subject}
+        onChange={handleChange}
+        required
+      />
+      <TextField
+        label="Body"
+        name="body"
+        value={email.body}
+        onChange={handleChange}
+        required
+        multiline
+        rows={4}
+      />
+      <Button variant="contained" type="submit" color="primary">
+        Send
+      </Button>
     </form>
   );
 }

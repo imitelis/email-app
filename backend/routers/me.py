@@ -42,4 +42,4 @@ class InboxEmailAPI(Resource):
         if not db_user:
             raise NotFound('User not found')
 
-        return db_user
+        return db_user, 200

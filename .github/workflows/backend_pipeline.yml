@@ -1,26 +1,79 @@
 name: BackEnd Pipeline
 
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  backend_pipeline:    
+  backend_job: 
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:          
           python-version: '3.10'
-      - name: Change directory
-        run: cd backend
+      
+      - name: Check directory
+        run: |
+          cd backend
+          pwd
+          ls -l
+      
       - name: Create venv
-        run: python3 -m venv venv
-      - name: Activate environment
-        run: source venv/bin/activate
+        run: |
+          cd backend
+          python3 -m venv venv
+      
+      - name: Activate venv
+        run: |
+          cd backend
+          source venv/bin/activate
+      
       - name: Install dependencies
-        run: pip install -r reqs.txt
-      - name: Start server
-        # run: flask run
+        run: |
+          cd backend
+          pip install -r reqs.txt
+      
+      - name: Outdated dependencies
+        run: |
+          cd backend
+          pip list --outdated
 
+      - name: Unittest user
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          python3 tests/unit_user.py
+
+      - name: Unittest email
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          python3 tests/unit_email.py
+
+      - name: Pytest API
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          pytest -s
+        env:
+          FLASK_APP: ${{ secrets.FLASK_APP }}
+          FLASK_ENV: ${{ secrets.FLASK_ENV }}
+          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
+          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
+          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          SERVER_NAME: ${{ secrets.SERVER_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          APP_URL: ${{ secrets.APP_URL }}
+          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+
+      # - name: Start server
+        # run: flask run

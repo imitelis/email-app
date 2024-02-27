@@ -24,3 +24,10 @@ UserInputBase = api.model('UserInputBase', {
     "cellphone": fields.String(description='User Cellphone', min_length=8, max_length=16),
     "password": fields.String(description='User Password', min_length=8, max_length=64)
 })
+
+UserEditBase = api.model('UserInputBase', {
+    "email": fields.String(description='User Email', min_length=8, max_length=256),
+    "cellphone": fields.String(description='User Cellphone', min_length=8, max_length=16),
+    "password": fields.String(description='User Password', min_length=8, max_length=64),
+    "new_password": fields.String(description='User New password', min_length=8, max_length=64)
+})

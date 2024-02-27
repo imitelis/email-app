@@ -20,6 +20,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import MailComposer from "./EmailCompose";
+import EmailList from "./EmailInbox";
 
 const drawerWidth = 240;
 
@@ -33,7 +34,7 @@ const itemsMenu: {
     id: "inbox",
     route: "",
     name: "Inbox",
-    component: <div>invou</div>,
+    component: <EmailList />,
   },
   {
     id: "send-email",
