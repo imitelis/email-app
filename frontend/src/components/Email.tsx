@@ -12,12 +12,8 @@ const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
 
   React.useEffect(() => {
     if (paperRef.current) {
-      const paperHeight = paperRef.current.clientHeight;
       const windowHeight = window.innerHeight;
-      const newMaxHeight = windowHeight - 40; // Adjust as needed for margins
-      if (paperHeight > newMaxHeight) {
-        paperRef.current.style.maxHeight = `${newMaxHeight}px`;
-      }
+      paperRef.current.style.maxHeight = `${windowHeight}px`;
     }
   }, [body]);
 
@@ -27,7 +23,10 @@ const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
       style={{
         padding: "20px",
         margin: "20px",
-        maxWidth: "100%",
+        marginLeft: "auto", // This pushes the Paper to the left
+        marginRight: "200px",
+        maxWidth: "80%",
+        height: "50vh", // This makes the Paper take up the full height of the view
         overflowY: "auto",
       }}
       ref={paperRef}

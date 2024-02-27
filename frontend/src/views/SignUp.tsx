@@ -11,27 +11,50 @@ import {
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../slices/authSlice";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Register = () => {
   const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cellphone, setCellphone] = useState("");
   const [error, setError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleRegister = async () => {
     setError("");
-    // This is only a basic validation of inputs. Improve this as needed.
+
     if (!email || !password || !full_name || !cellphone) {
       setError("Please fill all the required fields*.");
       return;
     }
-    // This is only a basic validation of inputs. Improve this as needed.
+
+    if (
+      email.length < 8 ||
+      password.length < 8 ||
+      full_name.length < 8 ||
+      cellphone.length < 8
+    ) {
+      setError("All fields must be at least 8 characters long.");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (isNaN(Number(cellphone))) {
+      setError("Cellphone must be numbers only.");
+      return;
+    }
+
     if (full_name && email && password && cellphone) {
       try {
         await dispatch(
@@ -40,13 +63,18 @@ const Register = () => {
             email,
             password,
             cellphone,
-          })
+          }),
         ).unwrap();
+        setSuccessMessage("Account created successfully");
+        setLoading(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } catch (e) {
+        setError(e as string); // Explicitly type the argument as string
         console.error(e);
+        setLoading(false);
       }
-    } else {
-      // Show an error message.
     }
   };
 
@@ -80,7 +108,6 @@ const Register = () => {
                   onChange={(e) => setFullName(e.target.value)}
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   required
@@ -137,6 +164,17 @@ const Register = () => {
             {error}
           </Alert>
         )}
+        {successMessage && (
+          <Alert severity="success" onClose={() => setSuccessMessage("")}>
+            {successMessage}
+          </Alert>
+        )}
+        <Backdrop
+          open={loading}
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </Container>
     </>
   );

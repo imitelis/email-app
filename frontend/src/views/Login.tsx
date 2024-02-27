@@ -11,96 +11,66 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
-// import { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
-
 import { login } from "../slices/authSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // const [cookie, setCookie] = useCookies(["EmailAppToken"]);
-  // const [userEmailCookie, setUserEmailCookie] = useCookies(["EmailAppEmail"]);
-  // const [userNameCookie, setUserNameCookie] = useCookies(["EmailAppEmail"]); <- only grab first name
-
-  // const dispatch = useAppDispatch();
-
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [, setCookie] = useCookies(["EmailAppToken"]);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    if (!email && !password) {
       setError("Please provide both email and password.");
       return;
     }
+
+    if (email && email.length < 8) {
+      setError("Email must be at least 8 characters long.");
+      return;
+    }
+
+    if (password && password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    if (email && !password) {
+      setError("Password is required when username is provided.");
+      return;
+    }
+
+    if (!email && password) {
+      setError("Email is required when password is provided.");
+      return;
+    }
+
     // This is only a basic validation of inputs. Improve this as needed.
     if (email && password) {
+      setLoading(true);
       try {
-        await dispatch(
-          login({
-            email,
-            password,
-          })
-        ).unwrap();
+        const resultAction = await dispatch(login({ email, password }));
+        const userData = unwrapResult(resultAction);
+        setCookie("EmailAppToken", userData.access_token, {
+          path: "/",
+          sameSite: "none",
+          secure: true,
+        });
+        setLoading(false);
       } catch (e) {
+        setError(e as string); // Explicitly type the argument as string
         console.error(e);
+        setLoading(false);
       }
     }
   };
-
-  // const handleLogin = async () => {
-  //   // Reset error state
-  //   setError("");
-  //   // This is only a basic validation of inputs. Improve this as needed.
-  //   if (!email || !password) {
-  //     setError("Please provide both email and password.");
-  //     return;
-  //   }
-  //   if (email && password) {
-  //     const url = "http://0.0.0.0:8000/api/login";
-
-  //     const config = {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     };
-
-  //     console.log(email, password);
-
-  //     const data = {
-  //       email: email,
-  //       password: password,
-  //     };
-
-  //     try {
-  //       const response = await axios.post(url, { email, password }, config);
-  //       console.log("Login successful:", response.data);
-  //       setCookie("EmailAppToken", response.data.access_token, {
-  //         path: "/",
-  //         sameSite: "none",
-  //         secure: true,
-  //       });
-
-  //       const newData = {
-  //         email: response.data.email,
-  //         full_name: response.data.full_name, // <- full_name.split(" ")[0]
-  //       };
-  //       // Stringify the JSON data before storing it in localStorage
-  //       localStorage.setItem("EmailAppUser", JSON.stringify(newData));
-
-  //       // Redirect or perform other actions upon successful login
-  //     } catch (error) {
-  //       console.error("Login failed:", error);
-  //       setError("Failed to login. Please try again."); // Set error message
-  //     }
-  //   } else {
-  //     // Show an error message.
-  //   }
-  // };
 
   return (
     <>
@@ -165,6 +135,9 @@ const Login = () => {
             {error}
           </Alert>
         )}
+        <Backdrop open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </Container>
     </>
   );

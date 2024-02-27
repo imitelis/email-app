@@ -46,7 +46,6 @@ export const login = createAsyncThunk("login", async (data: User) => {
     email: response.data.email,
     full_name: response.data.full_name, // <- full_name.split(" ")[0]
   };
-
   localStorage.setItem("userInfo", JSON.stringify(newData));
 
   return resData;
@@ -56,24 +55,17 @@ export const register = createAsyncThunk("register", async (data: NewUser) => {
   console.log(data);
   const response = await axiosInstance.post("/signup", data);
   const resData = response.data;
-  const newData = {
-    email: response.data.email,
-    full_name: response.data.full_name, // <- full_name.split(" ")[0]
-  };
-
-  localStorage.setItem("userInfo", JSON.stringify(newData));
-
   return resData;
 });
 
-export const logout = createAsyncThunk("logout", async () => {
-  const response = await axiosInstance.post("/logout", {});
-  const resData = response.data;
+// export const logout = createAsyncThunk("logout", async () => {
+//   const response = await axiosInstance.post("/logout", {});
+//   const resData = response.data;
 
-  localStorage.removeItem("userInfo");
+//   localStorage.removeItem("userInfo");
 
-  return resData;
-});
+//   return resData;
+// });
 
 // export const getUser = createAsyncThunk(
 //   "users/profile",
@@ -86,7 +78,11 @@ export const logout = createAsyncThunk("logout", async () => {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    clearBasicUserInfo: (state) => {
+      state.basicUserInfo = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -109,13 +105,9 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(
-        register.fulfilled,
-        (state, action: PayloadAction<UserBasicInfo>) => {
-          state.status = "idle";
-          state.basicUserInfo = action.payload;
-        }
-      )
+      .addCase(register.fulfilled, (state) => {
+        state.status = "idle";
+      })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Registration failed";
@@ -148,5 +140,7 @@ const authSlice = createSlice({
     // })
   },
 });
+
+export const { clearBasicUserInfo } = authSlice.actions;
 
 export default authSlice.reducer;
