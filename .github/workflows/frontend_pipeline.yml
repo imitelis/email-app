@@ -57,7 +57,7 @@ jobs:
       - name: Visit app
         if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         run: |
-          app_url="https://easy-email.fly.dev/"
+          app_url=${{ secrets.APP_URL }}
           curl -I $app_url
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
