@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '.env') });
-const DEV_API = process.env.DEV_PROXY_URL;
-const PROD_API = process.env.PROD_PROXY_URL;
+const DEV_PROXY_URL = process.env.DEV_PROXY_URL;
+const PROD_PROXY_URL = process.env.PROD_PROXY_URL;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
     port: 9000,
     proxy: {
       '/api': {
-        target: DEV_API,
+        target: DEV_PROXY_URL,
         changeOrigin: true,
         secure: false,
       },
@@ -29,7 +29,7 @@ export default defineConfig({
     port: 8080,
     proxy: {
       '/api': {
-        target: PROD_API,
+        target: PROD_PROXY_URL,
         changeOrigin: true,
         secure: false,
       },

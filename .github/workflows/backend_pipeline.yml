@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  backend_job: 
-    runs-on: ubuntu-20.04
+  backend_testing: 
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
@@ -75,5 +75,66 @@ jobs:
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
 
-      # - name: Start server
-        # run: flask run
+  backend_deploy:
+    needs: backend_job
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.7
+        env:
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          GIT_API_TOKEN: ${{ secrets.GIT_API_TOKEN }}
+          FLASK_APP: ${{ secrets.FLASK_APP }}
+          FLASK_ENV: ${{ secrets.FLASK_ENV }}
+          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
+          FLASK_RUN_HOST: ${{ secrets.PROD_FLASK_RUN_HOST }}
+          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
+          SERVER_NAME: ${{ secrets.PROD_SERVER_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          APP_URL: ${{ secrets.APP_URL }}
+          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script_stop: true
+          envs: FLASK_ENV, FLASK_DEBUG, FLASK_RUN_HOST, FLASK_RUN_PORT, DATABASE_URI, SERVER_NAME, JWT_SECRET_KEY, SMTP_USER, SMTP_PASSWORD, SMTP_SERVER, SMTP_PORT, APP_URL, PROD_FRONT_URL, DEV_FRONT_URL
+
+          script: |
+            ls -all
+            git clone https://oauth2:$GIT_API_TOKEN@github.com/imitelis/Email_App.git || ls
+            cd Email_App
+            cd backend
+            git checkout
+            git fetch --all
+            git reset --hard origin
+            git pull origin
+            source venv/bin/activate
+            virtualenv venv
+            source venv/bin/activate
+            pip install -r reqs.txt
+            export DATABASE_URI=$DATABASE_URI
+            export FLASK_APP=$FLASK_APP
+            export FLASK_ENV=$FLASK_ENV
+            export FLASK_DEBUG=$FLASK_DEBUG
+            export FLASK_RUN_HOST=$FLASK_RUN_HOST
+            export FLASK_RUN_PORT=$FLASK_RUN_PORT
+            export SERVER_NAME=$SERVER_NAME
+            export JWT_SECRET_KEY=$JWT_SECRET_KEY
+            export SMTP_USER=$SMTP_USER
+            export SMTP_PASSWORD=$SMTP_PASSWORD
+            export SMTP_SERVER=$SMTP_SERVER
+            export SMTP_PORT=$SMTP_PORT
+            export APP_URL=$APP_URL
+            export PROD_FRONT_URL=$PROD_FRONT_URL
+            export DEV_FRONT_URL=$DEV_FRONT_URL
+            killall gunicorn || ls
+            gunicorn --bind 0.0.0.0:8000 main:app --daemon
