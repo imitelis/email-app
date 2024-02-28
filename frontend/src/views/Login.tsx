@@ -27,7 +27,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email && !password) {
+    if (!email || !password) {
       setError("Please provide both email and password.");
       return;
     }
@@ -42,21 +42,12 @@ const Login = () => {
       return;
     }
 
-    if (email && !password) {
-      setError("Password is required when username is provided.");
-      return;
-    }
-
-    if (!email && password) {
-      setError("Email is required when password is provided.");
-      return;
-    }
-
     // This is only a basic validation of inputs. Improve this as needed.
     if (email && password) {
       setLoading(true);
       try {
         const resultAction = await dispatch(login({ email, password }));
+        console.log(resultAction)
         const userData = unwrapResult(resultAction);
         setCookie("EmailAppToken", userData.access_token, {
           path: "/",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useCookies } from "react-cookie";
 
@@ -10,7 +10,7 @@ function MailComposer() {
     body: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEmail({
       ...email,
@@ -18,7 +18,7 @@ function MailComposer() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const headers = new Headers();
     headers.append("Content-Type", "application/json");

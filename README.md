@@ -9,16 +9,16 @@
 
 ### 2. 25 Feb 9:00 PM, End-to-End Prototype
 
-- Record video of app
+- Record video of app (Marlon)
 
 ### 3. 27 Feb 9:00 PM, Provisional Design Plan
 
-- Design plan (document of stack and app)
+- Design plan (Carlos)
 
 ### 4. 1 Mar 9:00 PM, Final Submission
 
 - Functioning app deployed
-- Access to codebase (git repo to Karen)
+- Access to codebase (Karen)
 - Final design plan
 
 ## To Dos
@@ -86,11 +86,11 @@
 
 ### Angel:
 
-- Review basics of Bootstrap/TailwindCSS
-- Review basics of Auth and useHooks
+- Review basics of Bootstrap/TailwindCSS V
+- Review basics of Auth and useHooks V
 - Review basics of Cypress and Jest
 - Build the `notfound`, `inbox` and `folder` pages
-- Build the `Footer` component
+- Build the `Footer` component V
 - Build some E2E tests in Cypress
 
 ## Coder manual

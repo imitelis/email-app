@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for easy-email on 2024-02-26T17:16:31-05:00
+# fly.toml app configuration file generated for fake-email on 2024-02-27T22:52:23-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'easy-email'
+app = 'fake-email'
 primary_region = 'ord'
 
 [experimental]

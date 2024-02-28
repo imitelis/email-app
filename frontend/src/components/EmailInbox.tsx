@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   List,
   ListItem,
@@ -9,6 +10,8 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmails } from "../slices/emailSlice";
+import { AppDispatch } from "../slices/store";
+
 interface Email {
   uuid: string;
   sender: {
@@ -92,14 +95,21 @@ const EmailRow = ({ email }: { email: Email }) => {
   );
 };
 
+interface RootState {
+  emails: {
+    emails: Email[];
+    status: string
+  }
+}
+
 const EmailList = () => {
-  const emails = useSelector((state) => state.emails.emails);
-  const status = useSelector((state) => state.emails.status);
-  const dispatch = useDispatch();
+  const emails = useSelector((state: RootState) => state.emails.emails);
+  const status = useSelector((state: RootState) => state.emails.status);
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getEmails());
-  }, []);
+  }, [dispatch]);
 
   return status == "loading" ? (
     <p>Loading...</p>

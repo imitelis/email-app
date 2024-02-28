@@ -13,10 +13,10 @@ def client(app):
 def test_hello(client):
     response = client.get('/api/hello')
     assert response.status_code == 200
-    assert response.data == b'{\n    "success": "Hello from the Easy Email server"\n}\n'
+    assert response.data == b'{\n    "success": "Hello from the Fake Email server"\n}\n'
 
 def test_invite(client):
     data = {"email": "joedoe@gmail.com"}
     response = client.post('/api/invite', json=data)
     assert response.status_code == 200
-    assert response.data == b'{\n    "success": "Invitation email was sent to join Easy Email"\n}\n'
+    assert response.data == b'{\n    "success": "Invitation email was sent to join Fake Email"\n}\n'

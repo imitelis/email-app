@@ -39,7 +39,7 @@ class InviteAPI(Resource):
         Greet client side:
         '''
         
-        return {"success": "Hello from the Easy Email server"}, 200
+        return {"success": "Hello from the Fake Email server"}, 200
 
 
 # Starting endpoint
@@ -59,10 +59,10 @@ class InviteAPI(Resource):
         user = router.payload
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Easy Email: Invitation', f'Hi there! \n\n Someone has invited you to join Easy Email! \n You can create your new account here: {APP_URL}/signup \n\n Best regards, Easy Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Fake Email: Invitation', f'Hi there! \n\n Someone has invited you to join Fake Email! \n You can create your new account here: {APP_URL}/signup \n\n Best regards, Fake Email Team'))
         email_thread.start()
         
-        return {"success": "Invitation email was sent to join Easy Email"}, 200
+        return {"success": "Invitation email was sent to join Fake Email"}, 200
 
 
 # Starting endpoint
@@ -128,7 +128,7 @@ class SignUpAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Easy Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {APP_URL}/login \n\n Best regards, Easy Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Fake Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {APP_URL}/login \n\n Best regards, Fake Email Team'))
         email_thread.start()
 
         return new_user, 201
