@@ -43,9 +43,9 @@ class UserAPI(Resource):
     # What it returns
     @router.marshal_with(UserBase)
     # http request
-    def get(self, uuid):
+    def get(self, user_uuid):
         '''
-        Returns uuid User with:
+        Returns User with:
             id: id
             full_name: str
             email: str
@@ -54,7 +54,7 @@ class UserAPI(Resource):
             emails_received: [Email]
         '''
 
-        user = User.query.get(uuid)
+        user = User.query.get(user_uuid)
 
         #Exception when user is not found
         if not user:
@@ -64,9 +64,7 @@ class UserAPI(Resource):
     
     # what it expects
     @router.expect(UserEditBase)
-    # what it returns
-    @router.marshal_with(UserBase)
-    def patch(self, uuid):
+    def patch(self, user_uuid):
         '''
         Updates User with:
             email : str
@@ -76,7 +74,7 @@ class UserAPI(Resource):
         '''
         updated_user=router.payload
 
-        db_user = User.query.filter_by(uuid).first()
+        db_user = User.query.filter_by(uuid=user_uuid).first()
         
         if not db_user:
             raise NotFound('User not be found')
@@ -95,14 +93,14 @@ class UserAPI(Resource):
         
         db_user.password=password_hash
         db.session.commit()
-        return db_user, 200
+        return {"sucess": "Password updated"}, 200
     
     @router.marshal_with(UserBase)
-    def delete(self, uuid):
+    def delete(self, user_uuid):
         '''
         Removes User:
         '''
-        user= User.query.get(uuid)
+        user= User.query.get(user_uuid)
 
         if not user:
             raise NotFound('User not found')
