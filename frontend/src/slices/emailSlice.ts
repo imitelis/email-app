@@ -7,29 +7,6 @@ const initialState = {
   status: "idle",
 };
 
-export interface Email {
-  uuid: string;
-  sender: {
-    uuid: string;
-    full_name: string;
-    email: string;
-  };
-  recipient: {
-    uuid: string;
-    full_name: string;
-    email: string;
-  };
-  subject: string;
-  body: string;
-  sent_date: Date;
-  read_date: Date;
-  recipient_folder: number;
-}
-
-// interface EmailState {
-//     emails: Email[];
-//     status: 'idle' | 'loading' | 'failed';
-// }
 export const getEmails = createAsyncThunk("email/inbox", async () => {
   const token = getCookie("EmailAppToken");
   const res = await axios.get("http://0.0.0.0:8000/api/emails/inbox", {

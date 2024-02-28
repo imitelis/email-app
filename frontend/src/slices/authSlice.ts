@@ -94,7 +94,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<UserBasicInfo>) => {
           state.status = "idle";
           state.basicUserInfo = action.payload;
-        }
+        },
       )
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";

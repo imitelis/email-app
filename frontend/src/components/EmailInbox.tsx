@@ -11,25 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getEmails } from "../slices/emailSlice";
 import { AppDispatch } from "../slices/store";
-
-interface Email {
-  uuid: string;
-  sender: {
-    uuid: string;
-    full_name: string;
-    email: string;
-  };
-  recipient: {
-    uuid: string;
-    full_name: string;
-    email: string;
-  };
-  subject: string;
-  body: string;
-  sent_date: string;
-  read_date: string;
-  recipient_folder: number;
-}
+import { EmailInboxRow, RootState } from "../types/emails";
 
 const formatDate = (dateString: string) => {
   const options = {
@@ -51,7 +33,7 @@ const formatDate = (dateString: string) => {
 const handleClick = () => {
   console.log("click");
 };
-const EmailRow = ({ email }: { email: Email }) => {
+const EmailRow = ({ email }: { email: EmailInboxRow }) => {
   const [checked, setChecked] = useState(false);
   const { sender, subject, sent_date } = email;
 
@@ -95,13 +77,6 @@ const EmailRow = ({ email }: { email: Email }) => {
   );
 };
 
-interface RootState {
-  emails: {
-    emails: Email[];
-    status: string
-  }
-}
-
 const EmailList = () => {
   const emails = useSelector((state: RootState) => state.emails.emails);
   const status = useSelector((state: RootState) => state.emails.status);
@@ -117,7 +92,7 @@ const EmailList = () => {
     <p>Failed to load emails</p>
   ) : (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {emails.map((email: Email) => (
+      {emails.map((email: EmailInboxRow) => (
         <EmailRow key={email?.uuid} email={email} />
       ))}
     </List>

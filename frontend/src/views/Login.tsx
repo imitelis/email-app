@@ -47,7 +47,7 @@ const Login = () => {
       setLoading(true);
       try {
         const resultAction = await dispatch(login({ email, password }));
-        console.log(resultAction)
+        console.log(resultAction);
         const userData = unwrapResult(resultAction);
         setCookie("EmailAppToken", userData.access_token, {
           path: "/",

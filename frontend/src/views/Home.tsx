@@ -1,30 +1,31 @@
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import Inbox from "../components/Inbox";
-import Email from "../components/Email";
+// import { Button } from "@mui/material";
+// import { useNavigate } from "react-router-dom";
+// import Footer from "../components/Footer";
+// import Inbox from "../components/Inbox";
+// import Email from "../components/Email";
 // import SideBar from "../components/SideBar";
-import { useDispatch } from "react-redux";
-import { clearBasicUserInfo } from "../slices/authSlice";
+// import { useDispatch } from "react-redux";
+// import { clearBasicUserInfo } from "../slices/authSlice";
+import SideBar from "../components/SideBar";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    try {
-      dispatch(clearBasicUserInfo());
-      navigate("/");
-      localStorage.removeItem("userInfo");
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const handleLogout = () => {
+  //   try {
+  //     dispatch(clearBasicUserInfo());
+  //     navigate("/");
+  //     localStorage.removeItem("userInfo");
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   return (
     <>
-      {/* <SideBar /> */}
-      <Inbox />
+      <SideBar />
+      {/* <Inbox />
       <Email
         sender={"david@gmail.com"}
         subject={"git"}
@@ -34,7 +35,7 @@ const Home = () => {
       <Button variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleLogout}>
         Logout
       </Button>
-      <Footer />
+      <Footer /> */}
     </>
   );
 };

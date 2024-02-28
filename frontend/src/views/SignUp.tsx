@@ -63,7 +63,7 @@ const Register = () => {
             email,
             password,
             cellphone,
-          })
+          }),
         ).unwrap();
         setSuccessMessage("Account created successfully");
         setLoading(true);
