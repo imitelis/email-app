@@ -76,7 +76,7 @@ jobs:
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
 
   backend_deploy:
-    needs: backend_job
+    needs: backend_testing
     name: Build
     runs-on: ubuntu-latest
     steps:
