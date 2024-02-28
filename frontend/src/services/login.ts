@@ -1,23 +1,20 @@
-// import axios from "axios";
+import { LoginCompose, SignUpCompose } from "../types/sessions";
+import axiosInstance from "./api-client";
 
-// const baseUrl = "/api/login";
+export const LoginUser = async (user: LoginCompose) => {
+  return axiosInstance.post(`/login`, user).then((res) => res.data);
+};
 
-// interface LoginCredentials {
-//   email: string;
-//   password: string;
-// }
+export const SignUpUser = async (user: SignUpCompose) => {
+  return axiosInstance.post(`/signup`, user).then((res) => res.data);
+};
 
-// const config = {
-//   headers: {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//   },
-// };
 
-// const login = async (credentials: LoginCredentials) => {
-//   const response = await axios.post(baseUrl, credentials, config);
-//   console.log(response);
-//   return response.data;
-// };
-
-// export default { login };
+/*
+const config = {
+    headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+    },
+};
+*/

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -5,12 +6,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useNavigate } from "react-router-dom";
 
-const pages = ["Login", "SignUp"];
+const pages = ["Login", "SignUp", "Invite"];
 
 function ResponsiveAppBar() {
-  const navigate = useNavigate();
 
   return (
     <AppBar position="static">
@@ -21,7 +20,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -39,7 +38,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -51,7 +50,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            FakeEmail
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
           {pages.map((page, index) => (
@@ -59,7 +58,6 @@ function ResponsiveAppBar() {
               key={index} // Assign a unique key using the index
               variant="h6"
               noWrap
-              component="a"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -71,13 +69,8 @@ function ResponsiveAppBar() {
               }}
             >
               <Button
-                onClick={() => {
-                  if (page.toLowerCase() === "login") {
-                    navigate("/login");
-                  } else if (page.toLowerCase() === "signup") {
-                    navigate("/register");
-                  }
-                }}
+                component={Link}
+                to={`/${page.toLowerCase()}`}
                 sx={{
                   my: 2,
                   color: "white",

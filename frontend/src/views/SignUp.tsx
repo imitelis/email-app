@@ -9,11 +9,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { LockOutlined } from "@mui/icons-material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux-hooks";
-import { register } from "../slices/authSlice";
+import { signup } from "../slices/authSlice";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 const Register = () => {
@@ -58,7 +58,7 @@ const Register = () => {
     if (full_name && email && password && cellphone) {
       try {
         await dispatch(
-          register({
+          signup({
             full_name,
             email,
             password,
@@ -69,9 +69,9 @@ const Register = () => {
         setLoading(true);
         setTimeout(() => {
           navigate("/login");
-        }, 2000);
+        }, 5000);
       } catch (e) {
-        setError(e as string); // Explicitly type the argument as string
+        setError(e as string);
         console.error(e);
         setLoading(false);
       }
@@ -91,9 +91,19 @@ const Register = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <LockOutlined />
+            <AccountCircleIcon />
           </Avatar>
           <Typography variant="h5">Register</Typography>
+          {error && (
+          <Alert variant="filled" severity="error">
+            {error}
+          </Alert>
+        )}
+        {successMessage && (
+          <Alert severity="success" onClose={() => setSuccessMessage("")}>
+            {successMessage}
+          </Alert>
+        )}
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -159,16 +169,6 @@ const Register = () => {
             </Grid>
           </Box>
         </Box>
-        {error && (
-          <Alert variant="filled" severity="error">
-            {error}
-          </Alert>
-        )}
-        {successMessage && (
-          <Alert severity="success" onClose={() => setSuccessMessage("")}>
-            {successMessage}
-          </Alert>
-        )}
         <Backdrop
           open={loading}
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

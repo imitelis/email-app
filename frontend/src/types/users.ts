@@ -1,13 +1,3 @@
-export type User = {
-  email: string;
-  password: string;
-};
-
-export type NewUser = User & {
-  name: string;
-  cellphone: string;
-};
-
 export type UserBasicInfo = {
   id: string;
   name: string;

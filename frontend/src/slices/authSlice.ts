@@ -1,33 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../services/api-client";
 
-type User = {
-  email: string;
-  password: string;
-};
+import { LoginCompose, SignUpCompose } from "../types/sessions";
+import { UserBasicInfo } from "../types/users";
+import { AuthApiState } from "../types/apis";
 
-type NewUser = User & {
-  full_name: string;
-  cellphone: string;
-};
-
-type UserBasicInfo = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-type UserProfileData = {
-  name: string;
-  email: string;
-};
-
-type AuthApiState = {
-  basicUserInfo?: UserBasicInfo | null;
-  userProfileData?: UserProfileData | null;
-  status: "idle" | "loading" | "failed";
-  error: string | null;
-};
 
 const initialState: AuthApiState = {
   basicUserInfo: localStorage.getItem("userInfo")
@@ -38,34 +15,30 @@ const initialState: AuthApiState = {
   error: null,
 };
 
-export const login = createAsyncThunk("login", async (data: User) => {
+export const login = createAsyncThunk("login", async (data: LoginCompose) => {
   console.log(data);
   const response = await axiosInstance.post("/login", data);
   const resData = response.data;
   const newData = {
     email: response.data.email,
-    full_name: response.data.full_name, // <- full_name.split(" ")[0]
+    name: response.data.full_name.split(" ")[0]
   };
-  localStorage.setItem("userInfo", JSON.stringify(newData));
+  localStorage.setItem("FakeEmailUser", JSON.stringify(newData));
 
   return resData;
 });
 
-export const register = createAsyncThunk("register", async (data: NewUser) => {
+export const logout = createAsyncThunk("signup", async () => {
+  localStorage.removeItem("FakeEmailUser");
+  return null;
+});
+
+export const signup = createAsyncThunk("signup", async (data: SignUpCompose) => {
   console.log(data);
   const response = await axiosInstance.post("/signup", data);
   const resData = response.data;
   return resData;
 });
-
-// export const logout = createAsyncThunk("logout", async () => {
-//   const response = await axiosInstance.post("/logout", {});
-//   const resData = response.data;
-
-//   localStorage.removeItem("userInfo");
-
-//   return resData;
-// });
 
 // export const getUser = createAsyncThunk(
 //   "users/profile",
@@ -84,61 +57,33 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    const pendingCase = (state: AuthApiState) => {
+      state.status = "loading";
+      state.error = null;
+    };
+
+    const fulfilledCase = (state: AuthApiState, action: PayloadAction<UserBasicInfo>) => {
+      state.status = "idle";
+      state.basicUserInfo = action.payload;
+    };
+
+    const rejectedCase = (state: AuthApiState) => {
+      state.status = "failed";
+      state.error = "Something went wrong";
+    };
+
+    /*
+    const rejectedCase = (state: AuthApiState, action: PayloadAction<string>) => {
+      state.status = 'failed';
+      state.error = action.payload || 'Something went wrong';
+    };
+    */
+
     builder
-      .addCase(login.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(
-        login.fulfilled,
-        (state, action: PayloadAction<UserBasicInfo>) => {
-          state.status = "idle";
-          state.basicUserInfo = action.payload;
-        },
-      )
-      .addCase(login.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Login failed";
-      })
-
-      .addCase(register.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(register.fulfilled, (state) => {
-        state.status = "idle";
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || "Registration failed";
-      });
-
-    // .addCase(logout.pending, (state) => {
-    //   state.status = "loading";
-    //   state.error = null;
-    // })
-    // .addCase(logout.fulfilled, (state) => {
-    //   state.status = "idle";
-    //   state.basicUserInfo = null;
-    // })
-    // .addCase(logout.rejected, (state, action) => {
-    //   state.status = "failed";
-    //   state.error = action.error.message || "Logout failed";
-    // })
-
-    // .addCase(getUser.pending, (state) => {
-    //   state.status = "loading";
-    //   state.error = null;
-    // })
-    // .addCase(getUser.fulfilled, (state, action) => {
-    //   state.status = "idle";
-    //   state.userProfileData = action.payload;
-    // })
-    // .addCase(getUser.rejected, (state, action) => {
-    //   state.status = "failed";
-    //   state.error = action.error.message || "Get user profile data failed";
-    // })
-  },
+      .addCase(login.pending, pendingCase)
+      .addCase(login.fulfilled, fulfilledCase)
+      .addCase(login.rejected, rejectedCase)
+    }
 });
 
 export const { clearBasicUserInfo } = authSlice.actions;

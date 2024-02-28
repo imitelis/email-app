@@ -22,7 +22,7 @@ import {
   Alert,
 } from "@mui/material";
 
-const Login = () => {
+const Invite = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -147,4 +147,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Invite;
