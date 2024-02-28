@@ -1,5 +1,5 @@
 from flask_restx import fields
-from utils.api import api
+from config.api import api
 
 
 InviteBase = api.model('InviteBase', {

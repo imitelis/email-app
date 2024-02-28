@@ -10,6 +10,7 @@ jobs:
   frontend_testing:
     runs-on: ubuntu-latest
     steps:
+    
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3 
         with:          
@@ -45,7 +46,8 @@ jobs:
   frontend_deploy:
     needs: frontend_testing
     runs-on: ubuntu-latest
-    
+    steps:
+
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 

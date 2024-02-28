@@ -4,6 +4,7 @@ bases/__pycache__/
 models/__pycache__/
 routers/__pycache__/
 tests/__pycache__/
+config/__pycache__/
 utils/__pycache__/
 
 venv/

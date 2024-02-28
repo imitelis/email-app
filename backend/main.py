@@ -8,7 +8,7 @@ from flask_cors import CORS
 # utils
 import tracemalloc
 from dotenv import load_dotenv
-from utils.api import api
+from config.api import api
 from config.db import db
 from utils.jwt import jwt
 

@@ -10,6 +10,7 @@ jobs:
   backend_testing: 
     runs-on: ubuntu-latest
     steps:
+    
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:          
@@ -87,6 +88,8 @@ jobs:
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           GIT_API_TOKEN: ${{ secrets.GIT_API_TOKEN }}
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_REPO: ${{ secrets.GIT_REPO }}
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
           FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
@@ -112,8 +115,8 @@ jobs:
 
           script: |
             ls -all
-            git clone https://oauth2:$GIT_API_TOKEN@github.com/imitelis/Email_App.git || ls
-            cd Email_App
+            git clone https://oauth2:$GIT_API_TOKEN@github.com/$GIT_USERNAME/$GIT_REPO.git || ls
+            cd $GIT_REPO
             cd backend
             git checkout
             git fetch --all
@@ -140,3 +143,11 @@ jobs:
             export DEV_FRONT_URL=$DEV_FRONT_URL
             killall gunicorn || ls
             gunicorn --bind 0.0.0.0:8000 main:app --daemon
+
+      - name: Visit app
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        run: |
+          app_url=${{ secrets.PROD_PROXY_URL }}
+          curl -I $app_url
+        env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
