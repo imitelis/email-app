@@ -115,8 +115,8 @@ jobs:
 
           script: |
             ls -all
-            git clone https://oauth2:$GIT_API_TOKEN@github.com/$GIT_USERNAME/$GIT_REPO.git || ls
-            cd $GIT_REPO
+            git clone https://oauth2:$GIT_API_TOKEN@github.com/imitelis/Email_App.git || ls
+            cd Email_App
             cd backend
             git checkout
             git fetch --all
@@ -144,7 +144,7 @@ jobs:
             killall gunicorn || ls
             gunicorn --bind 0.0.0.0:8000 main:app --daemon
 
-      - name: Visit app
+      - name: Visit EC2
         if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         run: |
           app_url=${{ secrets.PROD_PROXY_URL }}
