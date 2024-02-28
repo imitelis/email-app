@@ -9,7 +9,7 @@ from flask_cors import CORS
 import tracemalloc
 from dotenv import load_dotenv
 from utils.api import api
-from utils.db import db
+from config.db import db
 from utils.jwt import jwt
 
 # api routers

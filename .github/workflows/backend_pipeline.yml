@@ -75,14 +75,15 @@ jobs:
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
 
+
   backend_deploy:
     needs: backend_testing
-    name: Build
     runs-on: ubuntu-latest
     steps:
 
-      - name: executing remote ssh commands using password
+      - name: SSH script
         uses: appleboy/ssh-action@v0.1.7
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           GIT_API_TOKEN: ${{ secrets.GIT_API_TOKEN }}
@@ -100,6 +101,7 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}

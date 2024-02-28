@@ -10,7 +10,7 @@ from models import User
 import bcrypt
 import threading
 from dotenv import load_dotenv
-from utils.db import db
+from config.db import db
 from utils.smtp import send_email
 
 

@@ -7,7 +7,7 @@ from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
 import threading
 from datetime import datetime
 from dotenv import load_dotenv
-from utils.db import db
+from config.db import db
 from utils.smtp import send_email
 
 from bases import  EmailBase, EmailInputBase, EmailFolderBase

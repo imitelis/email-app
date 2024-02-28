@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from utils.db import db
+from config.db import db
 from sqlalchemy.orm import relationship
 
 

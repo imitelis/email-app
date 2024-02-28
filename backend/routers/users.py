@@ -6,7 +6,7 @@ from bases import  UserBase, UserEditBase
 from models import User
 
 import bcrypt
-from utils.db import db
+from config.db import db
 
 
 router = Namespace("api/users")
