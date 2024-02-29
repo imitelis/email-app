@@ -4,42 +4,45 @@ import axiosInstance from "../services/api-client";
 import { LoginCompose, SignUpCompose } from "../types/sessions";
 import { UserBasicInfo } from "../types/users";
 import { AuthApiState } from "../types/apis";
+import { AxiosError } from "axios";
 
 const initialState: AuthApiState = {
-  basicUserInfo: localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo") as string)
+  basicUserInfo: localStorage.getItem("FakeEmailUser")
+    ? JSON.parse(localStorage.getItem("FakeEmailUser") as string)
     : null,
   userProfileData: undefined,
   status: "idle",
   error: null,
 };
 
-export const login = createAsyncThunk("login", async (data: LoginCompose) => {
-  console.log(data);
-  const response = await axiosInstance.post("/login", data);
-  const resData = response.data;
-  const newData = {
-    email: response.data.email,
-    name: response.data.full_name.split(" ")[0],
-  };
-  localStorage.setItem("FakeEmailUser", JSON.stringify(newData));
-
-  return resData;
-});
-
-export const logout = createAsyncThunk("signup", async () => {
-  localStorage.removeItem("FakeEmailUser");
-  return null;
-});
+export const login = createAsyncThunk(
+  "login",
+  async (data: LoginCompose, thunkAPI) => {
+    try {
+      const response = await axiosInstance.post("/login", data);
+      const resData = response.data;
+      const newData = {
+        email: response.data.email,
+        name: response.data.full_name.split(" ")[0],
+      };
+      localStorage.setItem("FakeEmailUser", JSON.stringify(newData));
+      return resData;
+    } catch (err) {
+      const error = err as AxiosError;
+      if (error.response && error.response.status === 401) {
+        return thunkAPI.rejectWithValue(error.response.status);
+      }
+    }
+  }
+);
 
 export const signup = createAsyncThunk(
   "signup",
   async (data: SignUpCompose) => {
-    console.log(data);
     const response = await axiosInstance.post("/signup", data);
     const resData = response.data;
     return resData;
-  },
+  }
 );
 
 // export const getUser = createAsyncThunk(
@@ -66,7 +69,7 @@ const authSlice = createSlice({
 
     const fulfilledCase = (
       state: AuthApiState,
-      action: PayloadAction<UserBasicInfo>,
+      action: PayloadAction<UserBasicInfo>
     ) => {
       state.status = "idle";
       state.basicUserInfo = action.payload;

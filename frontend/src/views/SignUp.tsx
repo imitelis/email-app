@@ -73,7 +73,7 @@ const SignUp = () => {
             email,
             password,
             cellphone,
-          }),
+          })
         ).unwrap();
         setSuccess("Account created successfully");
         setLoading(true);
@@ -186,6 +186,7 @@ const SignUp = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick={handleRegister}
+              id="signupButton"
             >
               Sign up
             </Button>

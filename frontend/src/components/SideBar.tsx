@@ -21,6 +21,9 @@ import MailIcon from "@mui/icons-material/Mail";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import MailComposer from "./EmailCompose";
 import EmailList from "./EmailInbox";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useDispatch } from "react-redux";
+import { clearBasicUserInfo } from "../slices/authSlice";
 
 const drawerWidth = 240;
 
@@ -116,6 +119,7 @@ export default function SideBar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -131,6 +135,18 @@ export default function SideBar() {
 
   const _clickOptiopn = (evt: evtType) => {
     navigate(`/home/${evt.route}`);
+  };
+
+  const handleLogout = () => {
+    try {
+      dispatch(clearBasicUserInfo());
+      navigate("/");
+      localStorage.removeItem("FakeEmailUser");
+      document.cookie =
+        "EmailAppToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -197,6 +213,17 @@ export default function SideBar() {
               </ListItemButton>
             </ListItem>
           ))}
+        </List>
+        <Divider />
+        <List>
+          <ListItem key="Logout" disablePadding>
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

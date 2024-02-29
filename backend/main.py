@@ -22,7 +22,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Set DataBase URI
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
 
 # Set JWT Key
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
@@ -46,10 +46,14 @@ DEV_FRONT_URL = os.getenv("DEV_FRONT_URL")
 PROD_FRONT_URL = os.getenv("PROD_FRONT_URL")
 
 # Enable CORS
-CORS(app, allow_headers=['Content-Type'], resources={r"/api/*": {"origins": [PROD_FRONT_URL, DEV_FRONT_URL]}})
+CORS(
+    app,
+    allow_headers=["Content-Type", "Authorization"],
+    resources={r"/api/*": {"origins": [PROD_FRONT_URL, DEV_FRONT_URL]}},
+)
 
 # Set TrustedHost
-app.config['SERVER_NAME'] = os.getenv("SERVER_NAME")
+app.config["SERVER_NAME"] = os.getenv("SERVER_NAME")
 
 # Create tables in DB
 with app.app_context():

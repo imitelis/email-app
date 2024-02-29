@@ -4,6 +4,14 @@ describe("Login Test", () => {
     cy.visit("http://localhost:9000/login"); // Assuming '/login' is the route for the login component
   });
 
+  it("displays error when credentials are not valid", () => {
+    cy.get('input[name="email"]').type("test@gmail.com"); // good email
+    cy.get('input[name="password"]').type("wrongpassword"); // wrong password
+    cy.get("#loginButton").click();
+
+    cy.contains("Invalid credentials. Please try again."); // Check for invalida credentials error message
+  });
+
   it("displays error messages for short inputs", () => {
     cy.get('input[name="email"]').type("invalid"); // short email
     cy.get('input[name="password"]').type("short"); // Short password
@@ -39,8 +47,29 @@ describe("Login Test", () => {
     cy.get('input[name="email"]').type("validemail@example.com");
     cy.get('input[name="password"]').type("validpassword");
     cy.get("#loginButton").click();
+  });
 
-    // You may add assertions here to verify successful login behavior,
-    // such as checking for the presence of a success message or redirection to a different page.
+  it("sends a successful POST request when login button is clicked", () => {
+    // Intercept the login request
+    cy.intercept("POST", "/api/login").as("loginRequest");
+
+    // Fill in the login form
+    cy.get('input[name="email"]').type("test@gmail.com");
+    cy.get('input[name="password"]').type("test123456");
+
+    // Click the login button
+    cy.get("#loginButton").click();
+
+    // Wait for the login request to complete
+    cy.wait("@loginRequest").then((interception) => {
+      // Assert that the request was made
+      expect(interception.request.body).to.deep.equal({
+        email: "test@gmail.com",
+        password: "test123456",
+      });
+
+      // Assert that the response has a successful status code (200)
+      expect(interception.response?.statusCode).to.equal(200);
+    });
   });
 });

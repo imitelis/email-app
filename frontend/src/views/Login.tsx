@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { login } from "../slices/authSlice";
 import { useAppDispatch } from "../hooks/redux-hooks";
@@ -30,6 +30,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [, setCookie] = useCookies(["EmailAppToken"]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -61,7 +62,6 @@ const Login = () => {
       setLoading(true);
       try {
         const resultAction = await dispatch(login({ email, password }));
-        // console.log(resultAction);
         const userData = unwrapResult(resultAction);
         setCookie("EmailAppToken", userData.access_token, {
           path: "/",
@@ -70,7 +70,10 @@ const Login = () => {
         });
         setLoading(false);
       } catch (e) {
-        setError(e as string);
+        if (e === 401) {
+          navigate("/login");
+          setError("Invalid credentials. Please try again.");
+        }
         console.error(e);
         setLoading(false);
       }

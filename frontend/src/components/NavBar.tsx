@@ -27,6 +27,7 @@ function ResponsiveAppBar() {
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
             <Typography
+              id="FakeEmail"
               variant="h6"
               noWrap
               component="a"
@@ -45,6 +46,7 @@ function ResponsiveAppBar() {
             </Typography>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
+              id="FakeEmail"
               variant="h5"
               noWrap
               component="a"
