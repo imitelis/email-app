@@ -59,6 +59,16 @@ jobs:
           cd backend
           export PYTHONPATH=$(pwd)
           pytest -s tests/test_api.py
+      - name: Session pytest
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          pytest -s tests/test_session.py
+      - name: Users pytest
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          pytest -s tests/test_users.py
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
