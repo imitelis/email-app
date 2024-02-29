@@ -36,6 +36,14 @@ jobs:
         run: |
           cd frontend
           npm run prettier
+
+      - name: E2E tests
+        run: |
+          cd frontend
+          npm run dev &
+          npm run cypress:run
+        env:
+          DEV_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
       
       - name: Build app
         run: |
@@ -54,7 +62,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy flyctl
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
         run: |
           cd frontend
           flyctl deploy --remote-only
@@ -64,7 +72,7 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
       - name: Visit app
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
         run: |
           app_url=${{ secrets.APP_URL }}
           curl -I $app_url

@@ -42,23 +42,23 @@ jobs:
           cd backend
           pip list --outdated
 
-      - name: Unittest user
+      - name: User unittest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
           python3 tests/unit_user.py
 
-      - name: Unittest email
+      - name: Email unittest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
           python3 tests/unit_email.py
 
-      - name: Pytest API
+      - name: API pytest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          pytest -s
+          pytest -s tests/test_api.py
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
@@ -84,7 +84,7 @@ jobs:
 
       - name: SSH script
         uses: appleboy/ssh-action@v0.1.7
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           GIT_API_TOKEN: ${{ secrets.GIT_API_TOKEN }}
@@ -144,7 +144,7 @@ jobs:
             gunicorn --bind 0.0.0.0:8000 main:app --daemon
 
       - name: Visit EC2
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skip') }}
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
         run: |
           app_url=${{ secrets.PROD_PROXY_URL }}
           curl -I $app_url

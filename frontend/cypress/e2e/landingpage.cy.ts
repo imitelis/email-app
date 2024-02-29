@@ -1,7 +1,9 @@
-describe("Landing Page", () => {
+const LOCALHOST_URL = Cypress.env("LOCALHOST_URL");
+
+describe("Landing Page tests", () => {
   beforeEach(() => {
     cy.viewport(1200, 800); // Adjust viewport size as needed
-    cy.visit("http://localhost:9000/"); // Assuming '/login' is the route for the login component
+    cy.visit(LOCALHOST_URL); // Assuming '/login' is the route for the login component
   });
 
   it("redirects to the correct pages when links are clicked", () => {

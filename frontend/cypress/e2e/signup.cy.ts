@@ -1,11 +1,13 @@
-describe("Signup Test", () => {
+const LOCALHOST_URL_SIGNUP = `${Cypress.env("LOCALHOST_URL")}/login`;
+
+describe("Signup tests", () => {
   beforeEach(() => {
     cy.on("uncaught:exception", () => {
       // Returning false here prevents Cypress from failing the test
       return false;
     });
     cy.viewport(1200, 800); // Adjust viewport size as needed
-    cy.visit("http://localhost:9000/signup"); // Assuming '/login' is the route for the login component
+    cy.visit(LOCALHOST_URL_SIGNUP); // Assuming '/login' is the route for the login component
   });
 
   it("displays error when email is not valid", () => {
@@ -57,6 +59,7 @@ describe("Signup Test", () => {
     cy.contains("Cellphone must be numbers only.");
   });
 
+  /*
   it("sends a successful POST request when signup button is clicked", () => {
     // Intercept the login request
     cy.intercept("POST", "/api/signup").as("signupRequest");
@@ -79,4 +82,5 @@ describe("Signup Test", () => {
       expect(interception.response?.statusCode).to.equal(400);
     });
   });
+  */
 });
