@@ -19,7 +19,7 @@ class Email(db.Model):
     recipient = relationship('User', foreign_keys=[recipient_uuid])
     
 
-    def __init__(self, subject, body, recipient_folder):
+    def __init__(self, subject, body, recipient_folder=0,sender_uuid=None,recipient_uuid=None):
         if len(subject) > 128:
             raise ValueError("Subject must be at most 128 characters long.")
         
@@ -29,4 +29,4 @@ class Email(db.Model):
         if recipient_folder > 4:
             raise ValueError("Recipient folder must be at most 4.")
         
-        super().__init__(subject=subject, body=body, recipient_folder=recipient_folder)
+        super().__init__(subject=subject, body=body, recipient_folder=recipient_folder,sender_uuid=sender_uuid,recipient_uuid=recipient_uuid)

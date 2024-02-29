@@ -128,7 +128,7 @@ class SignUpAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Email App: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Fake Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {APP_URL}/login \n\n Best regards, Fake Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(user["email"], 'Fake Email: New Account', f'Hi {user["full_name"]}! \n\n Welcome to the Fake Email! We are excited to have you on board. \n Now you can login with your new account credentials here: {APP_URL}/login \n\n Best regards, Fake Email Team'))
         email_thread.start()
 
         return new_user, 201
