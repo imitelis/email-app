@@ -41,7 +41,7 @@ jobs:
         run: |
           cd frontend
           npm run dev &
-          npm run cypress:run
+          npm run e2e:run
         env:
           DEV_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
       

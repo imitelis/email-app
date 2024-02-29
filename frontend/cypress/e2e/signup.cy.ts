@@ -1,4 +1,4 @@
-const LOCALHOST_URL_SIGNUP = `${Cypress.env("LOCALHOST_URL")}/login`;
+const LOCALHOST_URL_SIGNUP = `${Cypress.env("LOCALHOST_URL")}/signup`;
 
 describe("Signup tests", () => {
   beforeEach(() => {
@@ -7,7 +7,7 @@ describe("Signup tests", () => {
       return false;
     });
     cy.viewport(1200, 800); // Adjust viewport size as needed
-    cy.visit(LOCALHOST_URL_SIGNUP); // Assuming '/login' is the route for the login component
+    cy.visit(LOCALHOST_URL_SIGNUP); // Assuming '/signup' is the route for the signup component
   });
 
   it("displays error when email is not valid", () => {
