@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { login } from "../slices/authSlice";
 import { useAppDispatch } from "../hooks/redux-hooks";
+import { validEmail } from "../utils";
 
 import NavBar from "../components/NavBar";
 
@@ -29,7 +30,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const [, setCookie] = useCookies(["EmailAppToken"]);
   const [loading, setLoading] = useState(false);
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -47,7 +47,7 @@ const Login = () => {
       return;
     }
 
-    if (!emailRegex.test(email)) {
+    if (!validEmail(email)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -92,7 +92,7 @@ const Login = () => {
           <CssBaseline />
           <Box
             sx={{
-              mt: 20,
+              mt: 0,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -103,7 +103,11 @@ const Login = () => {
             </Avatar>
             <Typography variant="h5">Login</Typography>
             {error && (
-              <Alert variant="filled" severity="error">
+              <Alert
+                variant="filled"
+                severity="error"
+                onClose={() => setError("")}
+              >
                 {error}
               </Alert>
             )}
@@ -145,7 +149,7 @@ const Login = () => {
               </Button>
               <Grid container justifyContent={"flex-end"}>
                 <Grid item>
-                  <Link to="/register">Don't have an account? Register</Link>
+                  Don't have an account? <Link to="/signup">Sign up</Link>
                 </Grid>
               </Grid>
             </Box>

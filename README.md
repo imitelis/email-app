@@ -17,7 +17,7 @@
 
 ### 4. 1 Mar 9:00 PM, Final Submission
 
-- Functioning app deployed
+- Functioning app deployed (All)
 - Access to codebase (Karen)
 - Final design plan
 
@@ -40,17 +40,13 @@
 ## Stack
 
 - **FrontEnd:** Vite + React + TypeScript, MaterialUI
-- **Backend:** Flask, Flask-RESTX, Swagger / OpenAPI, SQLAlchemy, PyJWT, bcrypt
+- **Backend:** Flask, Flask-RESTX, OpenAPI, SQLAlchemy, PyJWT, bcrypt
 - **Database:** PostgreSQL, Amazon RDS
-- **Quality Assurance:** (for BackEnd: PyTest, HTTPX), (for FrontEnd: Jest, Cypress)
+- **Quality Assurance:** BackEnd: PyTest, HTTPX / FrontEnd: Jest, Cypress
 - **CI/CD:** Git Actions, Amazon Elastic Beanstalk, Amazon CloudWatch
 - **Deployment:** Docker, Amazon EC2
 
 ## Homework
-
-### To Discuss:
-
-- Docker compose or separated components (frontend and backend/db) ?
 
 ### David:
 
@@ -67,12 +63,12 @@
 
 ### Marlon:
 
-- Check Elastic Beanstalk
+- Check Elastic Beanstalk V
 - Check RDS for PostgreSQL V
 - Build API for users on Flask V
-- Work deploying backend and db on AWS
-- Review basics of CI/CD and backend pipeline (AWS)
-- Check functional tests with Flask
+- Work deploying backend and db on AWS V
+- Review basics of CI/CD and backend pipeline (AWS) V
+- Check functional tests with Flask V
 - Build functional testing on Flask
 
 ### Carlos:
@@ -88,10 +84,10 @@
 
 - Review basics of Bootstrap/TailwindCSS V
 - Review basics of Auth and useHooks V
-- Review basics of Cypress and Jest
+- Review basics of Cypress and Jest V
 - Build the `notfound`, `inbox` and `folder` pages
 - Build the `Footer` component V
-- Build some E2E tests in Cypress
+- Build some E2E tests in Cypress V
 
 ## Coder manual
 

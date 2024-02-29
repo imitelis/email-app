@@ -5,7 +5,6 @@ import { LoginCompose, SignUpCompose } from "../types/sessions";
 import { UserBasicInfo } from "../types/users";
 import { AuthApiState } from "../types/apis";
 
-
 const initialState: AuthApiState = {
   basicUserInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo") as string)
@@ -21,7 +20,7 @@ export const login = createAsyncThunk("login", async (data: LoginCompose) => {
   const resData = response.data;
   const newData = {
     email: response.data.email,
-    name: response.data.full_name.split(" ")[0]
+    name: response.data.full_name.split(" ")[0],
   };
   localStorage.setItem("FakeEmailUser", JSON.stringify(newData));
 
@@ -33,12 +32,15 @@ export const logout = createAsyncThunk("signup", async () => {
   return null;
 });
 
-export const signup = createAsyncThunk("signup", async (data: SignUpCompose) => {
-  console.log(data);
-  const response = await axiosInstance.post("/signup", data);
-  const resData = response.data;
-  return resData;
-});
+export const signup = createAsyncThunk(
+  "signup",
+  async (data: SignUpCompose) => {
+    console.log(data);
+    const response = await axiosInstance.post("/signup", data);
+    const resData = response.data;
+    return resData;
+  },
+);
 
 // export const getUser = createAsyncThunk(
 //   "users/profile",
@@ -62,7 +64,10 @@ const authSlice = createSlice({
       state.error = null;
     };
 
-    const fulfilledCase = (state: AuthApiState, action: PayloadAction<UserBasicInfo>) => {
+    const fulfilledCase = (
+      state: AuthApiState,
+      action: PayloadAction<UserBasicInfo>,
+    ) => {
       state.status = "idle";
       state.basicUserInfo = action.payload;
     };
@@ -82,8 +87,8 @@ const authSlice = createSlice({
     builder
       .addCase(login.pending, pendingCase)
       .addCase(login.fulfilled, fulfilledCase)
-      .addCase(login.rejected, rejectedCase)
-    }
+      .addCase(login.rejected, rejectedCase);
+  },
 });
 
 export const { clearBasicUserInfo } = authSlice.actions;

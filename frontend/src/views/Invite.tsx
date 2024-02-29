@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { login } from "../slices/authSlice";
-import { useAppDispatch } from "../hooks/redux-hooks";
+import { InviteEmail } from "../services/invite";
+import { validEmail } from "../utils";
 
 import NavBar from "../components/NavBar";
 
-import { LockOutlined } from "@mui/icons-material";
+import MobileScreenShareIcon from "@mui/icons-material/MobileScreenShare";
 import {
   Container,
   CssBaseline,
@@ -23,16 +21,14 @@ import {
 } from "@mui/material";
 
 const Invite = () => {
-  const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [, setCookie] = useCookies(["EmailAppToken"]);
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError("Please provide both email and password.");
+    if (!email) {
+      setError("Please provide email.");
       return;
     }
 
@@ -41,23 +37,17 @@ const Invite = () => {
       return;
     }
 
-    if (password && password.length < 8) {
-      setError("Password must be at least 8 characters long.");
+    if (!validEmail(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
-    if (email && password) {
+    if (email) {
       setLoading(true);
       try {
-        const resultAction = await dispatch(login({ email, password }));
-        // console.log(resultAction);
-        const userData = unwrapResult(resultAction);
-        setCookie("EmailAppToken", userData.access_token, {
-          path: "/",
-          sameSite: "none",
-          secure: true,
-        });
+        await InviteEmail(email);
         setLoading(false);
+        setSuccess("Invitation sent successfully");
       } catch (e) {
         setError(e as string);
         console.error(e);
@@ -78,70 +68,64 @@ const Invite = () => {
         }}
       >
         <Container maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            mt: 20,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <LockOutlined />
-          </Avatar>
-          <Typography variant="h5">Login</Typography>
-          {error && (
-          <Alert variant="filled" severity="error">
-            {error}
-          </Alert>
-          )}
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
-            >
-              Login
-            </Button>
-            <Grid container justifyContent={"flex-end"}>
-              <Grid item>
-                <Link to="/register">Don't have an account? Register</Link>
+          <CssBaseline />
+          <Box
+            sx={{
+              mt: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
+              <MobileScreenShareIcon />
+            </Avatar>
+            <Typography variant="h5">Invite</Typography>
+            {error && (
+              <Alert
+                variant="filled"
+                severity="error"
+                onClose={() => setError("")}
+              >
+                {error}
+              </Alert>
+            )}
+            {success && (
+              <Alert severity="success" onClose={() => setSuccess("")}>
+                {success}
+              </Alert>
+            )}
+            <Box sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={handleLogin}
+              >
+                Invite
+              </Button>
+              <Grid container justifyContent={"flex-end"}>
+                <Grid item>
+                  Don't have an account? <Link to="/signup">Sign up</Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Backdrop open={loading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </Container>
+          <Backdrop open={loading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        </Container>
       </Box>
     </>
   );

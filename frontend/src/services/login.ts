@@ -9,7 +9,6 @@ export const SignUpUser = async (user: SignUpCompose) => {
   return axiosInstance.post(`/signup`, user).then((res) => res.data);
 };
 
-
 /*
 const config = {
     headers: {

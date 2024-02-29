@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux-hooks";
-import { signup } from "../slices/authSlice";
+//import { useAppDispatch } from "../hooks/redux-hooks";
+//import { signup } from "../slices/authSlice";
 import { validEmail } from "../utils";
 
 import NavBar from "../components/NavBar";
@@ -19,16 +19,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import KeyIcon from '@mui/icons-material/Key';
 
-const SignUp = () => {
-  const dispatch = useAppDispatch();
+const Password = () => {
+  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [cellphone, setCellphone] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatedPassword, setRepeatedPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -36,16 +35,16 @@ const SignUp = () => {
   const handleRegister = async () => {
     setError("");
 
-    if (!email || !password || !full_name || !cellphone) {
+    if (!email || !cellphone || !password || !newPassword) {
       setError("Please fill all the required fields*.");
       return;
     }
 
     if (
       email.length < 8 ||
+      cellphone.length < 8 ||
       password.length < 8 ||
-      full_name.length < 8 ||
-      cellphone.length < 8
+      newPassword.length < 8
     ) {
       setError("All fields must be at least 8 characters long.");
       return;
@@ -55,8 +54,8 @@ const SignUp = () => {
       return;
     }
 
-    if (password != repeatedPassword) {
-      setError("Passwords do not match.");
+    if (password == newPassword) {
+      setError("Passwords are the same.");
       return;
     }
 
@@ -65,8 +64,9 @@ const SignUp = () => {
       return;
     }
 
-    if (full_name && email && password && cellphone) {
+    if (email && cellphone && password && newPassword) {
       try {
+        /*
         await dispatch(
           signup({
             full_name,
@@ -75,6 +75,7 @@ const SignUp = () => {
             cellphone,
           }),
         ).unwrap();
+        */
         setSuccess("Account created successfully");
         setLoading(true);
         setTimeout(() => {
@@ -102,9 +103,9 @@ const SignUp = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <AccountCircleIcon />
+            <KeyIcon />
           </Avatar>
-          <Typography variant="h5">Sign up</Typography>
+          <Typography variant="h5">Update password</Typography>
           {error && (
             <Alert
               variant="filled"
@@ -121,18 +122,6 @@ const SignUp = () => {
           )}
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  autoFocus
-                  value={full_name}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -172,12 +161,12 @@ const SignUp = () => {
                 <TextField
                   required
                   fullWidth
-                  name="repeatPassword"
-                  label="Repeat Password"
+                  name="newPassword"
+                  label="New Password"
                   type="password"
-                  id="repeatPassword"
-                  value={repeatedPassword}
-                  onChange={(e) => setRepeatedPassword(e.target.value)}
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -187,7 +176,7 @@ const SignUp = () => {
               sx={{ mt: 3, mb: 2 }}
               onClick={handleRegister}
             >
-              Sign up
+              Update
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
@@ -207,4 +196,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Password;

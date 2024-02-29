@@ -5,7 +5,9 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 
 import Home from "./views/Home";
 import Login from "./views/Login";
-import Register from "./views/SignUp";
+import SignUp from "./views/SignUp";
+import Invite from "./views/Invite";
+import Password from "./views/Password";
 import LandingPage from "./views/LandingPage";
 import NotFound from "./views/NotFound";
 
@@ -18,7 +20,9 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Register />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/invite" element={<Invite />} />
+          <Route path="/password" element={<Password />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route element={<ProtectedLayout />}>
