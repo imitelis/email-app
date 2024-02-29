@@ -63,7 +63,7 @@ const Register = () => {
             email,
             password,
             cellphone,
-          }),
+          })
         ).unwrap();
         setSuccessMessage("Account created successfully");
         setLoading(true);
@@ -93,17 +93,17 @@ const Register = () => {
           <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
             <AccountCircleIcon />
           </Avatar>
-          <Typography variant="h5">Register</Typography>
+          <Typography variant="h5">SignUp</Typography>
           {error && (
-          <Alert variant="filled" severity="error">
-            {error}
-          </Alert>
-        )}
-        {successMessage && (
-          <Alert severity="success" onClose={() => setSuccessMessage("")}>
-            {successMessage}
-          </Alert>
-        )}
+            <Alert variant="filled" severity="error">
+              {error}
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert severity="success" onClose={() => setSuccessMessage("")}>
+              {successMessage}
+            </Alert>
+          )}
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>

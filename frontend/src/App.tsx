@@ -18,7 +18,7 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/signup" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route element={<ProtectedLayout />}>

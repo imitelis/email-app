@@ -29,6 +29,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [, setCookie] = useCookies(["EmailAppToken"]);
   const [loading, setLoading] = useState(false);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -36,8 +37,18 @@ const Login = () => {
       return;
     }
 
+    if (email && email.length < 8 && password && password.length < 8) {
+      setError("Email and password must be at least 8 characters long.");
+      return;
+    }
+
     if (email && email.length < 8) {
       setError("Email must be at least 8 characters long.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -78,70 +89,71 @@ const Login = () => {
         }}
       >
         <Container maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            mt: 20,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <LockOutlined />
-          </Avatar>
-          <Typography variant="h5">Login</Typography>
-          {error && (
-          <Alert variant="filled" severity="error">
-            {error}
-          </Alert>
-          )}
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <CssBaseline />
+          <Box
+            sx={{
+              mt: 20,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
+              <LockOutlined />
+            </Avatar>
+            <Typography variant="h5">Login</Typography>
+            {error && (
+              <Alert variant="filled" severity="error">
+                {error}
+              </Alert>
+            )}
+            <Box sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="password"
+                name="password"
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
 
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
-            >
-              Login
-            </Button>
-            <Grid container justifyContent={"flex-end"}>
-              <Grid item>
-                <Link to="/register">Don't have an account? Register</Link>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={handleLogin}
+                id="loginButton"
+              >
+                Login
+              </Button>
+              <Grid container justifyContent={"flex-end"}>
+                <Grid item>
+                  <Link to="/register">Don't have an account? Register</Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Backdrop open={loading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </Container>
+          <Backdrop open={loading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        </Container>
       </Box>
     </>
   );
