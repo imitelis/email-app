@@ -122,7 +122,6 @@ jobs:
             git fetch --all
             git reset --hard origin
             git pull origin
-            source venv/bin/activate
             virtualenv venv
             source venv/bin/activate
             pip install -r reqs.txt
