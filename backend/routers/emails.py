@@ -70,7 +70,7 @@ class EmailAPI(Resource):
         db.session.commit()
 
         # SMTP part
-        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Fake Email: New Email', f'Hi {db_recipient.full_name}! \n\n You have received a new message in your Fake Email inbox! \n You can continue to read it here: {APP_URL}/inbox \n\n Best regards, Fake Email Team'))
+        email_thread = threading.Thread(target=send_email_background, args=(db_recipient.email, 'Fake Email: New Email', f'Hi {db_recipient.full_name}! \n\n You have received a new email in your Fake Email inbox! \n You can continue to read it here: {APP_URL}/emails \n\n Best regards, Fake Email Team'))
         email_thread.start()
 
         return new_email, 201
