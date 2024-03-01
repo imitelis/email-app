@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 //import { signup } from "../slices/authSlice";
 import { validEmail } from "../utils";
 
-import NavBar from "../components/NavBar";
-
 import {
   Alert,
   Avatar,
@@ -91,7 +89,6 @@ const Password = () => {
 
   return (
     <>
-      <NavBar />
       <Container maxWidth="xs">
         <CssBaseline />
         <Box
@@ -127,7 +124,7 @@ const Password = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email"
                   name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -164,7 +161,7 @@ const Password = () => {
                   name="newPassword"
                   label="New Password"
                   type="password"
-                  id="newPassword"
+                  id="new-password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />

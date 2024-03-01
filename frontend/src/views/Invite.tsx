@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { InviteEmail } from "../services/invite";
 import { validEmail } from "../utils";
 
-import NavBar from "../components/NavBar";
-
 import MobileScreenShareIcon from "@mui/icons-material/MobileScreenShare";
 import {
   Container,
@@ -61,7 +59,6 @@ const Invite = () => {
 
   return (
     <>
-      <NavBar />
       <Box
         sx={{
           display: "flex",
@@ -104,7 +101,7 @@ const Invite = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 autoFocus
                 value={email}

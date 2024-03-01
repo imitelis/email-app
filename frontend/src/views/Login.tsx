@@ -6,8 +6,6 @@ import { login } from "../slices/authSlice";
 import { useAppDispatch } from "../hooks/redux-hooks";
 import { validEmail } from "../utils";
 
-import NavBar from "../components/NavBar";
-
 import { LockOutlined } from "@mui/icons-material";
 import {
   Container,
@@ -88,7 +86,6 @@ const Login = () => {
 
   return (
     <>
-      <NavBar />
       <Box
         sx={{
           display: "flex",
@@ -126,7 +123,7 @@ const Login = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 autoFocus
                 value={email}

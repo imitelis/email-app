@@ -4,7 +4,7 @@ import { useAppDispatch } from "../hooks/redux-hooks";
 import { signup } from "../slices/authSlice";
 import { validEmail } from "../utils";
 
-import NavBar from "../components/NavBar";
+// import NavBar from "../components/NavBar";
 
 import {
   Alert,
@@ -93,7 +93,6 @@ const SignUp = () => {
 
   return (
     <>
-      <NavBar />
       <Container maxWidth="xs">
         <CssBaseline />
         <Box
@@ -141,7 +140,7 @@ const SignUp = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email"
                   name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -178,7 +177,7 @@ const SignUp = () => {
                   name="repeatPassword"
                   label="Repeat Password"
                   type="password"
-                  id="repeatPassword"
+                  id="repeat-password"
                   value={repeatedPassword}
                   onChange={(e) => setRepeatedPassword(e.target.value)}
                 />

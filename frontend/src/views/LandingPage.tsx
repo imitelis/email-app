@@ -1,5 +1,3 @@
-import NavBar from "../components/NavBar";
-
 import robot from "../assets/robot.png";
 
 import { Box } from "@mui/material";
@@ -12,7 +10,6 @@ import Typography from "@mui/material/Typography";
 const LandingPage = () => {
   return (
     <>
-      <NavBar />
       <Box
         sx={{
           display: "flex",

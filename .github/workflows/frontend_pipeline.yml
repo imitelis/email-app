@@ -40,6 +40,11 @@ jobs:
           cd frontend
           npm run prettier
 
+      - name: Jest tests
+        run: |
+          cd frontend
+          npm run test
+
       - name: E2E tests
         run: |
           cd frontend
@@ -63,6 +68,16 @@ jobs:
 
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Secrets flyctl
+        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
+        run: |
+          cd frontend
+          flyctl secrets set PROD_PROXY_URL=$PROD_PROXY_URL
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
       - name: Deploy flyctl
         if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}

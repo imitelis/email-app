@@ -1,14 +1,11 @@
 import { Link } from "react-router-dom";
 
-import NavBar from "../components/NavBar";
-
 import { Box, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 const NotFound = () => {
   return (
     <>
-      <NavBar />
       <Box
         sx={{
           display: "flex",
