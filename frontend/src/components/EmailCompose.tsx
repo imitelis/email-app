@@ -34,10 +34,12 @@ function MailComposer() {
     
     */
     const myEmail = {
-      to: "dsaavedra@unal.edu.co",
-      subject: "I'm testing once more",
-      body: "It kinda feels messy here"
+      to: email.to,
+      subject: email.subject,
+      body: email.body
     }
+    console.log(myEmail)
+    
     const myToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwOTI2NTMwNiwianRpIjoiNDI4ZjQxNTQtYzMxNS00NDA4LTgzMzctZTBhOTQ3Y2YwNjg3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImRzYWF2ZWRyYUB1bmFsLmVkdS5jbyIsIm5iZiI6MTcwOTI2NTMwNiwiY3NyZiI6ImM5ZWU3Yjc1LTg3Y2MtNGNlYi05OGJhLTgxZjY2MjViYzhiZSJ9.SPGfUSdTH0IoOVvynRhC-hFuSFN4ZESduzv75JyzjZ8`
     postNewEmail(myToken, myEmail);
     /*
