@@ -6,15 +6,13 @@ describe("Login tests", () => {
     cy.visit(LOCALHOST_URL_LOGIN); // Assuming '/login' is the route for the login component
   });
 
-  /*
   it("displays error when credentials are not valid", () => {
     cy.get('input[name="email"]').type("test@gmail.com"); // good email
     cy.get('input[name="password"]').type("wrongpassword"); // wrong password
     cy.get("#loginButton").click();
 
-    cy.contains("Invalid credentials. Please try again."); // Check for invalida credentials error message
+    cy.contains("Invalid credentials. Please try again.").should("be.visible"); // Check for invalida credentials error message
   });
-  */
 
   it("displays error messages for short inputs", () => {
     cy.get('input[name="email"]').type("invalid"); // short email
@@ -53,7 +51,6 @@ describe("Login tests", () => {
     cy.get("#loginButton").click();
   });
 
-  /*
   it("sends a successful POST request when login button is clicked", () => {
     // Intercept the login request
     cy.intercept("POST", "/api/login").as("loginRequest");
@@ -77,5 +74,4 @@ describe("Login tests", () => {
       expect(interception.response?.statusCode).to.equal(200);
     });
   });
-  */
 });
