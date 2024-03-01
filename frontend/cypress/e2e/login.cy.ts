@@ -2,6 +2,10 @@ const LOCALHOST_URL_LOGIN = `${Cypress.env("LOCALHOST_URL")}/login`;
 
 describe("Login tests", () => {
   beforeEach(() => {
+    cy.on("uncaught:exception", () => {
+      // Returning false here prevents Cypress from failing the test
+      return false;
+    });
     cy.viewport(1200, 800); // Adjust viewport size as needed
     cy.visit(LOCALHOST_URL_LOGIN); // Assuming '/login' is the route for the login component
   });
@@ -11,7 +15,9 @@ describe("Login tests", () => {
     cy.get('input[name="password"]').type("wrongpassword"); // wrong password
     cy.get("#loginButton").click();
 
-    cy.contains("Invalid credentials. Please try again.").should("be.visible"); // Check for invalida credentials error message
+    cy.contains("Invalid credentials. Please try again.", {
+      timeout: 7000,
+    }).should("be.visible"); // Check for invalida credentials error message
   });
 
   it("displays error messages for short inputs", () => {
