@@ -8,7 +8,7 @@
 // import { clearBasicUserInfo } from "../slices/authSlice";
 import SideBar from "../components/SideBar";
 
-const Home = () => {
+const EmailView = () => {
   // const navigate = useNavigate();
   // const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ const Home = () => {
         subject={"git"}
         body={"asdasdasdasdsd"}
       />
-      <h1>Home</h1>
+      <h1>EmailView</h1>
       <Button variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleLogout}>
         Logout
       </Button>
@@ -40,4 +40,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default EmailView;

@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 
-import Home from "./views/Home";
+import EmailView from "./views/EmailView";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import Invite from "./views/Invite";
@@ -26,7 +26,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route element={<ProtectedLayout />}>
-          <Route path="/home/*" element={<Home />} />
+          <Route path="/emails/*" element={<EmailView />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

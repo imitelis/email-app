@@ -69,7 +69,7 @@ const Login = () => {
             sameSite: "none",
             secure: true,
           });
-          navigate("/home");
+          navigate("/emails");
         }
         setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

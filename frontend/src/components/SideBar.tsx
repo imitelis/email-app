@@ -41,10 +41,11 @@ const itemsMenu: {
   },
   {
     id: "send-email",
-    route: "send-email",
+    route: "send",
     name: "Send email",
     component: <MailComposer />,
   },
+
 ];
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -134,7 +135,7 @@ export default function SideBar() {
   }
 
   const _clickOptiopn = (evt: evtType) => {
-    navigate(`/home/${evt.route}`);
+    navigate(`/emails/${evt.route}`);
   };
 
   const handleLogout = () => {
