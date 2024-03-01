@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+    pull_request:
+      branches: [main]    
+      types: [opened, synchronize]
 
 jobs:
   backend_testing: 
@@ -75,11 +78,12 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      - name: Session pytest
+      
+      - name: Session API pytest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          pytest -s tests/test_session.py
+          pytest -s tests/test_session_api.py
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
@@ -96,11 +100,12 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      - name: Users pytest
+      
+      - name: Users API pytest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          pytest -s tests/test_users.py
+          pytest -s tests/test_users_api.py
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
@@ -117,11 +122,12 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      - name: Emails pytest
+      
+      - name: Emails API pytest
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          pytest -s tests/test_emails.py
+          pytest -s tests/test_emails_api.py
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}

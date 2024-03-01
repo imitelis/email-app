@@ -69,9 +69,9 @@ const Login = () => {
             sameSite: "none",
             secure: true,
           });
+          navigate("/home");
         }
         setLoading(false);
-        navigate("/home");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(e);
@@ -80,7 +80,7 @@ const Login = () => {
         }
         if (e === 404) {
           setError("User not found. Please try again.");
-        }        
+        }
         setLoading(false);
       }
     }
