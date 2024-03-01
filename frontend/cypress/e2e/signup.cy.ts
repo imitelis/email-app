@@ -59,14 +59,13 @@ describe("Signup tests", () => {
     cy.contains("Cellphone must be numbers only.");
   });
 
-  /*
-  it("sends a successful POST request when signup button is clicked", () => {
+  it("sends a successful POST request when signup button is clicked, if user already exist on db, returns a 400", () => {
     // Intercept the login request
     cy.intercept("POST", "/api/signup").as("signupRequest");
 
     // Fill in the login form
-    cy.get('input[name="name"]').type("test3 user");
-    cy.get('input[name="email"]').type("test3@gmail.com");
+    cy.get('input[name="name"]').type("test user");
+    cy.get('input[name="email"]').type("test@gmail.com");
     cy.get('input[name="cellphone"]').type("3001234321");
     cy.get('input[name="password"]').type("passvalid");
     cy.get('input[name="repeatPassword"]').type("passvalid");
@@ -82,5 +81,4 @@ describe("Signup tests", () => {
       expect(interception.response?.statusCode).to.equal(400);
     });
   });
-  */
 });
