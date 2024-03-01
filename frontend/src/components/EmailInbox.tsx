@@ -7,11 +7,33 @@ import {
   Divider,
   Typography,
   Checkbox,
+  TextField,
+  Input,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmails } from "../slices/emailSlice";
 import { AppDispatch } from "../slices/store";
 import { EmailInboxRow, RootState } from "../types/emails";
+import SearchIcon from '@mui/icons-material/Search';
+
+function SearchInput({ placeholder, onChange }: { placeholder: string, onChange: (event: React.ChangeEvent<HTMLInputElement>) => void }) {
+  return (
+    <TextField
+      placeholder={placeholder}
+      onChange={onChange}
+      variant="outlined"
+      InputProps={{
+        startAdornment: (
+          <SearchIcon color="action" />
+        ),
+        style: {
+          width: 500, 
+        }
+      }}
+    />
+  );
+}
+
 
 const formatDate = (dateString: string) => {
   const options = {
@@ -81,23 +103,36 @@ const EmailList = () => {
   const emails = useSelector((state: RootState) => state.emails.emails);
   const status = useSelector((state: RootState) => state.emails.status);
   const dispatch: AppDispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
 
   console.log(emails)
 
   useEffect(() => {
     dispatch(getEmails());
   }, [dispatch]);
+  const filteredEmails = emails.filter((email: EmailInboxRow) =>
+  email.subject.toLowerCase().includes(searchTerm.toLowerCase())) ;
 
-  return status == "loading" ? (
-    <p>Loading...</p>
-  ) : status == "failed" ? (
-    <p>Failed to load emails</p>
-  ) : (
-    <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {emails.map((email: EmailInboxRow) => (
-        <EmailRow key={email?.uuid} email={email} />
-      ))}
-    </List>
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+  return (
+    <>
+      <SearchInput
+        placeholder="Search"
+        onChange={handleSearchChange} />
+      {status === 'loading' ? (
+        <p>Loading...</p>
+      ) : status === 'failed' ? (
+        <p>Failed to load emails</p>
+      ) : (
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+          {filteredEmails.map((email: EmailInboxRow) => (
+            <EmailRow key={email.uuid} email={email} />
+          ))}
+        </List>
+      )}
+    </>
   );
 };
 
