@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getCookie } from "../utils";
-import axios from "axios";
+import { getInboxEmails } from "../services/emails";
 
 const initialState = {
   emails: [],
@@ -8,16 +8,16 @@ const initialState = {
 };
 
 export const getEmails = createAsyncThunk("email/inbox", async () => {
-  const token = getCookie("EmailAppToken");
-  const res = await axios.get("http://0.0.0.0:8000/api/emails/inbox", {
-    headers: {
-      Accept: "application/json",
-      "Content-type": "Application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+  const token = getCookie("FakeEmailToken");
+  return getInboxEmails(token);
 });
+
+/*
+export const newEmail = createAsyncThunk("/emails", async () => {
+  const token = getCookie("FakeEmailToken");
+  return getInboxEmails(token, email: emailCompose);
+});
+*/
 
 const emailsSlice = createSlice({
   name: "emails",

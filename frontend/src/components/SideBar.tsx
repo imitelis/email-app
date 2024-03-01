@@ -143,7 +143,7 @@ export default function SideBar() {
       navigate("/");
       localStorage.removeItem("FakeEmailUser");
       document.cookie =
-        "EmailAppToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        "FakeEmailToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     } catch (e) {
       console.error(e);
     }

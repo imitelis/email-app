@@ -1,9 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useCookies } from "react-cookie";
+import { postNewEmail } from "../services/emails";
 
 function MailComposer() {
-  const [cookies] = useCookies(["EmailAppToken"]);
+  const [cookies] = useCookies(["FakeEmailToken"]);
   const [email, setEmail] = useState({
     to: "",
     subject: "",
@@ -20,20 +21,32 @@ function MailComposer() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    /*
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Accept", "application/json");
-    headers.append("Authorization", `Bearer ${cookies.EmailAppToken}`);
+    headers.append("Authorization", `Bearer ${cookies.FakeEmailToken}`);
     fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
       method: "POST",
       headers,
       body: JSON.stringify(email),
     });
+    
+    */
+    const myEmail = {
+      to: "dsaavedra@unal.edu.co",
+      subject: "I'm testing once more",
+      body: "It kinda feels messy here"
+    }
+    const myToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwOTI2NTMwNiwianRpIjoiNDI4ZjQxNTQtYzMxNS00NDA4LTgzMzctZTBhOTQ3Y2YwNjg3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImRzYWF2ZWRyYUB1bmFsLmVkdS5jbyIsIm5iZiI6MTcwOTI2NTMwNiwiY3NyZiI6ImM5ZWU3Yjc1LTg3Y2MtNGNlYi05OGJhLTgxZjY2MjViYzhiZSJ9.SPGfUSdTH0IoOVvynRhC-hFuSFN4ZESduzv75JyzjZ8`
+    postNewEmail(myToken, myEmail);
+    /*
     setEmail({
       to: "",
       subject: "",
       body: "",
     });
+    */
   };
 
   return (

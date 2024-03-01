@@ -82,6 +82,8 @@ const EmailList = () => {
   const status = useSelector((state: RootState) => state.emails.status);
   const dispatch: AppDispatch = useDispatch();
 
+  console.log(emails)
+
   useEffect(() => {
     dispatch(getEmails());
   }, [dispatch]);

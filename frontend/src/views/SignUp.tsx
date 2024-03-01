@@ -80,9 +80,12 @@ const SignUp = () => {
         setTimeout(() => {
           navigate("/login");
         }, 5000);
-      } catch (e) {
-        setError(e as string);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
         console.error(e);
+        if (e === 400) {
+          setError("Email already taken. Please try again.");
+        }        
         setLoading(false);
       }
     }

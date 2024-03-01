@@ -28,7 +28,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [, setCookie] = useCookies(["EmailAppToken"]);
+  const [, setCookie] = useCookies(["FakeEmailToken"]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -63,18 +63,24 @@ const Login = () => {
       try {
         const resultAction = await dispatch(login({ email, password }));
         const userData = unwrapResult(resultAction);
-        setCookie("EmailAppToken", userData.access_token, {
-          path: "/",
-          sameSite: "none",
-          secure: true,
-        });
+        if (userData) {
+          setCookie("FakeEmailToken", userData.access_token, {
+            path: "/",
+            sameSite: "none",
+            secure: true,
+          });
+        }
         setLoading(false);
-      } catch (e) {
+        navigate("/home");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        console.error(e);
         if (e === 401) {
-          navigate("/login");
           setError("Invalid credentials. Please try again.");
         }
-        console.error(e);
+        if (e === 404) {
+          setError("User not found. Please try again.");
+        }        
         setLoading(false);
       }
     }

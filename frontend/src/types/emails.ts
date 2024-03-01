@@ -10,6 +10,12 @@ export type EmailProps = {
   body: string;
 };
 
+export type SendEmail = {
+  to: string;
+  subject: string;
+  body: string;
+};
+
 export interface EmailInboxRow {
   uuid: string;
   sender: {
