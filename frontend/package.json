@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.8.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,7 +29,8 @@
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.1",
-    "ts-jest": "^29.1.2"
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^6.0.1",

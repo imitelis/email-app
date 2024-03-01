@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-//import { useAppDispatch } from "../hooks/redux-hooks";
-//import { signup } from "../slices/authSlice";
+import { patchUser } from "../services/password";
 import { validEmail } from "../utils";
 
 import {
@@ -63,25 +62,29 @@ const Password = () => {
     }
 
     if (email && cellphone && password && newPassword) {
+      const updatedUser = {
+        email: email,
+        cellphone: cellphone,
+        password: password,
+        new_password: newPassword
+      }
       try {
-        /*
-        await dispatch(
-          signup({
-            full_name,
-            email,
-            password,
-            cellphone,
-          }),
-        ).unwrap();
-        */
-        setSuccess("Account created successfully");
-        setLoading(true);
+        await patchUser(updatedUser);
+        setLoading(false);
+        setSuccess("Password updated successfully");
         setTimeout(() => {
           navigate("/login");
         }, 5000);
-      } catch (e) {
-        setError(e as string);
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
         console.error(e);
+        if (e === 401) {
+          setError("Invalid credentials. Please try again.");
+        }
+        if (e === 404) {
+          setError("User not found. Please try again.");
+        }
         setLoading(false);
       }
     }
