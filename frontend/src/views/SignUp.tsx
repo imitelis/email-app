@@ -73,7 +73,7 @@ const SignUp = () => {
             email,
             password,
             cellphone,
-          })
+          }),
         ).unwrap();
         setSuccess("Account created successfully");
         setLoading(true);
@@ -85,7 +85,7 @@ const SignUp = () => {
         console.error(e);
         if (e === 400) {
           setError("Email already taken. Please try again.");
-        }        
+        }
         setLoading(false);
       }
     }

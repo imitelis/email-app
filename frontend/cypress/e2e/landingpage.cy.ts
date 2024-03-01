@@ -44,7 +44,7 @@ describe("Landing Page tests", () => {
     cy.visit(`${Cypress.env("LOCALHOST_URL")}/unknown-page`);
     cy.url().should("include", "/unknown-page");
     cy.contains("Sorry, the page you are looking for does not exist.").should(
-      "be.visible"
+      "be.visible",
     ); // Assuming landing page is the base URL
 
     cy.contains("Homepage").click();

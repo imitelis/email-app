@@ -1,4 +1,11 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getEmails } from "../slices/emailSlice";
+import { AppDispatch } from "../slices/store";
+
+import { folderDict, formatDate } from "../utils";
+import { EmailInboxRow, RootState } from "../types/emails";
+import SearchInput from "./SearchInput";
 
 import {
   List,
@@ -7,64 +14,30 @@ import {
   Divider,
   Typography,
   Checkbox,
-  TextField,
+  Button,
+  Grid,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getEmails } from "../slices/emailSlice";
-import { AppDispatch } from "../slices/store";
-import { EmailInboxRow, RootState } from "../types/emails";
-import SearchIcon from "@mui/icons-material/Search";
 
-function SearchInput({
-  placeholder,
-  onChange,
+const EmailRow = ({
+  email,
+  isSelected,
+  onSelectEmail,
 }: {
-  placeholder: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <TextField
-      id="searchBard"
-      name="search"
-      placeholder={placeholder}
-      onChange={onChange}
-      variant="outlined"
-      InputProps={{
-        startAdornment: <SearchIcon color="action" />,
-        style: {
-          width: 500,
-        },
-      }}
-    />
-  );
-}
-
-const formatDate = (dateString: string) => {
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  const date = new Date(dateString);
-
-  date.setHours(date.getHours() - 5);
-
-  return date.toLocaleDateString(
-    undefined,
-    options as Intl.DateTimeFormatOptions
-  );
-};
-const handleClick = () => {
-  console.log("click");
-};
-const EmailRow = ({ email }: { email: EmailInboxRow }) => {
-  const [checked, setChecked] = useState(false);
+  email: EmailInboxRow;
+  isSelected: boolean;
+  onSelectEmail: (uuid: string) => void;
+}) => {
   const { sender, subject, sent_date } = email;
 
   const handleCheckboxChange = () => {
-    setChecked(!checked);
+    onSelectEmail(email.uuid);
+  };
+
+  const handleClick = () => {
+    onSelectEmail(isSelected ? "" : email.uuid);
   };
 
   return (
@@ -77,10 +50,15 @@ const EmailRow = ({ email }: { email: EmailInboxRow }) => {
           justifyContent: "space-between",
           borderBottom: "1px solid #f0f0f0",
           padding: "12px 0",
+          backgroundColor: isSelected
+            ? "#f0f8ff"
+            : email.read_date
+              ? "#E8E8E8"
+              : "transparent",
         }}
       >
         <Checkbox
-          checked={checked}
+          checked={isSelected}
           onChange={handleCheckboxChange}
           color="primary"
         />
@@ -108,22 +86,84 @@ const EmailList = () => {
   const status = useSelector((state: RootState) => state.emails.status);
   const dispatch: AppDispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEmailSelected, setIsEmailSelected] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState<number>(0);
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
 
-  console.log(emails);
+  const handleSelectEmail = (uuid: string) => {
+    setSelectedEmail(uuid === selectedEmail ? null : uuid);
+  };
+
+  useEffect(() => {
+    dispatch(getEmails());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setIsEmailSelected(selectedEmail !== null);
+  }, [selectedEmail, isEmailSelected]);
 
   useEffect(() => {
     dispatch(getEmails());
   }, [dispatch]);
   const filteredEmails = emails.filter((email: EmailInboxRow) =>
-    email.subject.toLowerCase().includes(searchTerm.toLowerCase())
+    email.subject.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
+
+  const handleChangeFolder = (event: SelectChangeEvent<number>) => {
+    setSelectedFolder(Number(event.target.value));
+  };
+
+  const handleMoveEmail = () => {
+    console.log(selectedEmail);
+    console.log(selectedFolder);
+  };
+
   return (
     <>
-      <SearchInput placeholder="Search" onChange={handleSearchChange} />
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <SearchInput placeholder="Search" onChange={handleSearchChange} />
+        </Grid>
+        {isEmailSelected && (
+          <>
+            <Grid item>
+              <Typography variant="body2" color="textSecondary">
+                Move to:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Select
+                value={selectedFolder}
+                onChange={handleChangeFolder}
+                variant="outlined"
+                size="small"
+                style={{ width: "120px" }}
+              >
+                {Object.entries(folderDict).map(([key, value]) => (
+                  <MenuItem key={key} value={parseInt(key)}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item>
+              <Button
+                fullWidth
+                size="small"
+                variant="contained"
+                style={{ margin: "12px", width: "100px" }}
+                onClick={handleMoveEmail}
+              >
+                Move
+              </Button>
+            </Grid>
+          </>
+        )}
+      </Grid>
       {status === "loading" ? (
         <p>Loading...</p>
       ) : status === "failed" ? (
@@ -131,7 +171,12 @@ const EmailList = () => {
       ) : (
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {filteredEmails.map((email: EmailInboxRow) => (
-            <EmailRow key={email.uuid} email={email} />
+            <EmailRow
+              key={email.uuid}
+              email={email}
+              isSelected={selectedEmail === email.uuid}
+              onSelectEmail={handleSelectEmail}
+            />
           ))}
         </List>
       )}

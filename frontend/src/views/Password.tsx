@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import KeyIcon from '@mui/icons-material/Key';
+import KeyIcon from "@mui/icons-material/Key";
 
 const Password = () => {
   // const dispatch = useAppDispatch();
@@ -66,8 +66,8 @@ const Password = () => {
         email: email,
         cellphone: cellphone,
         password: password,
-        new_password: newPassword
-      }
+        new_password: newPassword,
+      };
       try {
         await patchUser(updatedUser);
         setLoading(false);
@@ -75,7 +75,7 @@ const Password = () => {
         setTimeout(() => {
           navigate("/login");
         }, 5000);
-        
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(e);

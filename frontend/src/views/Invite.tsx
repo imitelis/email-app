@@ -46,12 +46,11 @@ const Invite = () => {
         await InviteEmail(email);
         setLoading(false);
         setSuccess("Invitation sent successfully");
-
       } catch (e: unknown) {
         console.error(e);
         if (e) {
           setError("Something wrong happened. Please try again.");
-        }        
+        }
         setLoading(false);
       }
     }

@@ -75,7 +75,7 @@ describe("Signup tests", () => {
     // Wait for the login request to complete
     cy.wait("@signupRequest").then((interception) => {
       expect(interception.response?.body.message).to.equal(
-        "User already exists"
+        "User already exists",
       );
       // Assert that the request was made
       expect(interception.response?.statusCode).to.equal(400);

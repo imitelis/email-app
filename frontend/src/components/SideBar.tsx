@@ -45,7 +45,6 @@ const itemsMenu: {
     name: "Send email",
     component: <MailComposer />,
   },
-
 ];
 
 const openedMixin = (theme: Theme): CSSObject => ({

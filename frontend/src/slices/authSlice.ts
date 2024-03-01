@@ -33,7 +33,7 @@ export const login = createAsyncThunk(
         return thunkAPI.rejectWithValue(error.response.status);
       }
     }
-  }
+  },
 );
 
 export const signup = createAsyncThunk(
@@ -42,7 +42,7 @@ export const signup = createAsyncThunk(
     const response = await axiosInstance.post("/signup", data);
     const resData = response.data;
     return resData;
-  }
+  },
 );
 
 // export const getUser = createAsyncThunk(
@@ -69,7 +69,7 @@ const authSlice = createSlice({
 
     const fulfilledCase = (
       state: AuthApiState,
-      action: PayloadAction<UserBasicInfo>
+      action: PayloadAction<UserBasicInfo>,
     ) => {
       state.status = "idle";
       state.basicUserInfo = action.payload;

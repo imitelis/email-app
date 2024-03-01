@@ -49,7 +49,7 @@ describe("Checks that logged user can see Send Email", () => {
     cy.get('input[name="to"]').type("test1099@gmail.com");
     cy.get('input[name="subject"]').type("This is a test email"); //if the test breaks look into the way email compose form is being handled /EmailCompose.tsx
     cy.get('textarea[name="body"]').type(
-      "testtesttesttesttesttesttesttesttesttestte"
+      "testtesttesttesttesttesttesttesttesttestte",
     );
     cy.get("#sendEmail").click();
     cy.wait("@emailcreateRequest").then((interception) => {

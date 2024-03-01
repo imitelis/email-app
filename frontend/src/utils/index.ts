@@ -1,4 +1,6 @@
 import { getCookie } from "./cookies";
 import { validEmail } from "./validEmail";
+import { formatDate } from "./formatDate";
+import { folderDict } from "./folderDict";
 
-export { getCookie, validEmail };
+export { getCookie, validEmail, formatDate, folderDict };
