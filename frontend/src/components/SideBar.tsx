@@ -24,6 +24,7 @@ import EmailList from "./EmailInbox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import { clearBasicUserInfo } from "../slices/authSlice";
+import Email from "./Email";
 
 const drawerWidth = 240;
 
@@ -238,7 +239,9 @@ export default function SideBar() {
               />
             );
           })}
+          <Route path="view" element={<Email />} />
         </Routes>
+        
       </Box>
     </Box>
   );

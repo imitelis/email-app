@@ -1,21 +1,21 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
 
-type EmailProps = {
-  sender: string;
-  subject: string;
-  body: string;
-};
+// type EmailProps = {
+//   sender: string;
+//   subject: string;
+//   body: string;
+// };
 
-const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
+const Email: React.FC = () => {
   const paperRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (paperRef.current) {
-      const windowHeight = window.innerHeight;
-      paperRef.current.style.maxHeight = `${windowHeight}px`;
-    }
-  }, [body]);
+  // const [email, setEmail] = useState<EmailProps>();
+  // React.useEffect(() => {
+  //   if (paperRef.current) {
+  //     const windowHeight = window.innerHeight;
+  //     paperRef.current.style.maxHeight = `${windowHeight}px`;
+  //   }
+  // }, [body]);
 
   return (
     <Paper
@@ -31,10 +31,10 @@ const Email: React.FC<EmailProps> = ({ sender, subject, body }) => {
       }}
       ref={paperRef}
     >
-      <Typography variant="h5">Subject: {subject}</Typography>
-      <Typography variant="subtitle1">From: {sender}</Typography>
+      <Typography variant="h5">Subject: {"subject"}</Typography>
+      <Typography variant="subtitle1">From: {"sender"}</Typography>
       <Typography variant="body1" style={{ marginTop: "10px" }}>
-        {body}
+        {"body"}
       </Typography>
     </Paper>
   );
