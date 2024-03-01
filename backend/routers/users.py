@@ -28,11 +28,42 @@ class UsersAPI(Resource):
             full_name: str
             email: str
             cellphone: str
-            emails_sent: [Email]
-            emails_received: [Email]
         '''
 
         return User.query.all(), 200
+    
+    # what it expects
+    @router.expect(UserEditBase)
+    def patch(self):
+        '''
+        Updates User with:
+            email : str
+            cellphone: str
+            password: str
+            new_password: str
+        '''
+        updated_user=router.payload
+
+        db_user = User.query.filter_by(email=updated_user["email"]).first()
+
+        if not db_user:
+            raise NotFound('User not be found')
+        
+        if not bcrypt.checkpw(updated_user["password"].encode('utf-8'), db_user.password.encode('utf-8')):
+            raise Unauthorized('Wrong credentials')
+        
+        if not db_user.cellphone == updated_user["cellphone"]:
+            raise Unauthorized('Wrong credentials')
+        
+        if not db_user.email == updated_user["email"]:
+            raise Unauthorized('Wrong credentials')
+
+        pwhash = bcrypt.hashpw(updated_user["new_password"].encode('utf-8'), bcrypt.gensalt())
+        password_hash = pwhash.decode('utf8')
+        
+        db_user.password=password_hash
+        db.session.commit()
+        return {"sucess": "Password updated"}, 200
 
 
 @router.route("/<string:user_uuid>")
