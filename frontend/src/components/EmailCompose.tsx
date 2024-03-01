@@ -1,10 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button } from "@mui/material";
-import { useCookies } from "react-cookie";
 import { postNewEmail } from "../services/emails";
 
 function MailComposer() {
-  const [cookies] = useCookies(["FakeEmailToken"]);
   const [email, setEmail] = useState({
     to: "",
     subject: "",
