@@ -117,6 +117,27 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+      - name: Emails pytest
+        run: |
+          cd backend
+          export PYTHONPATH=$(pwd)
+          pytest -s tests/test_emails.py
+        env:
+          FLASK_APP: ${{ secrets.FLASK_APP }}
+          FLASK_ENV: ${{ secrets.FLASK_ENV }}
+          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
+          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
+          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          SERVER_NAME: ${{ secrets.SERVER_NAME }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          APP_URL: ${{ secrets.APP_URL }}
+          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
 
 
   backend_deployment:
