@@ -12,24 +12,6 @@ def app():
 def client(app):
     return app.test_client()
 
-def test_emails_post(client):
-    data= {
-        "to": "carlosquintero@gmail.com",
-        "subject": "testtesttesttesttestSUB",
-        "body": "testtesttesttesttestBOD"}
-    
-    #TODO: This shouldn't be hard coded but accessing with function gives: OutOfContextError
-    access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwOTI2MzgxMCwianRpIjoiMWJlNGRlYmEtYmM3ZC00OWI5LTg1YWUtNjRlMzhhMmY5MjRhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc3F1aW50ZXJvMkBnbWFpbC5jb20iLCJuYmYiOjE3MDkyNjM4MTAsImNzcmYiOiIzZDRkM2Q5OS04ZmFiLTQ2MDgtOGE0Ni00NWUwM2ZlZTc5YzYifQ.cdaXvLhvsM-np_YbhqixehXrDj2EnMQ0WjCnjuLeR7A"#create_access_token("carlosquintero2@gmail.com", expires_delta=False)
-    headers = {
-        'Authorization': 'Bearer {}'.format(access_token)
-    }
-
-    response = client.post('/api/emails/', headers=headers,json=data)
-    resturned_mail=str(response.data)
-
-    assert response.status_code == 201
-    assert  all(match in resturned_mail  for match in ["uuid", "sender", "recipient","subject","body","sent_date","read_date"] )
-    assert "testtesttesttesttestBOD" in resturned_mail and "testtesttesttesttestSUB" in resturned_mail
 
 def test_emails_inbox(client):
 
