@@ -1,15 +1,28 @@
 # routers/users.py
 from flask_restx import Resource, Namespace
 from werkzeug.exceptions import Unauthorized, NotFound
+import os
+from dotenv import load_dotenv
+import threading
 
 from bases import  UserBase, UserEditBase
 from models import User
 
+
+from utils.smtp import send_email
 import bcrypt
 from config.db import db
 
+load_dotenv()
+APP_URL = os.getenv("APP_URL")
 
 router = Namespace("api/users")
+
+def send_email_background(recipient_email, subject, body):
+    """
+    Function to send email in the background for performance
+    """
+    send_email(recipient_email, subject, body)
 
 
 # Starting endpoint
@@ -63,6 +76,11 @@ class UsersAPI(Resource):
         
         db_user.password=password_hash
         db.session.commit()
+        
+        # SMTP part
+        email_thread = threading.Thread(target=send_email_background, args=(db_user.email, 'Fake Email: Password updated', f'Hi {db_user.full_name}! \n\n You have updated the password for your Fake Email account. \n Now you can login with your new password credentials here: {APP_URL}/login \n\n Best regards, Fake Email Team'))
+        email_thread.start()
+
         return {"sucess": "Password updated"}, 200
 
 
