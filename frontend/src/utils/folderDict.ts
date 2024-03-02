@@ -1,8 +1,6 @@
-interface FolderDict {
-  [key: number]: string;
-}
+import { EmailFolderDict } from "../types/dicts";
 
-export const folderDict: FolderDict = {
+export const folderDict: EmailFolderDict = {
   0: "Inbox",
   1: "Important",
   2: "Social",
