@@ -24,6 +24,7 @@ import EmailList from "./EmailInbox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import { clearBasicUserInfo } from "../slices/authSlice";
+import AdbIcon from "@mui/icons-material/Adb";
 import Email from "./Email";
 
 const drawerWidth = 240;
@@ -121,6 +122,9 @@ export default function SideBar() {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const storedValue = localStorage.getItem("FakeEmailUser");
+  const parsedValue = JSON.parse(storedValue as string);
+  const name = parsedValue.name;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -167,13 +171,67 @@ export default function SideBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography
+            id="Email"
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
             Email
           </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
+          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            id="FakeEmail"
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            FakeEmail
+          </Typography>
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
+          <Typography
+            id="name"
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Hi, {name}
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -241,7 +299,6 @@ export default function SideBar() {
           })}
           <Route path="view" element={<Email />} />
         </Routes>
-        
       </Box>
     </Box>
   );

@@ -10,6 +10,8 @@ const SearchInput = ({
 }) => {
   return (
     <TextField
+      id="search"
+      name="search"
       placeholder={placeholder}
       onChange={onChange}
       variant="outlined"
