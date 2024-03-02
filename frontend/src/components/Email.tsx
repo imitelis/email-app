@@ -1,22 +1,20 @@
 import { Paper, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import {  StateEmailView } from "../types/emails";
+import { useNavigate } from "react-router-dom";
 
-// type EmailProps = {
-//   sender: string;
-//   subject: string;
-//   body: string;
-// };
 
 const Email: React.FC = () => {
   const paperRef = React.useRef<HTMLDivElement>(null);
-  // const [email, setEmail] = useState<EmailProps>();
-  // React.useEffect(() => {
-  //   if (paperRef.current) {
-  //     const windowHeight = window.innerHeight;
-  //     paperRef.current.style.maxHeight = `${windowHeight}px`;
-  //   }
-  // }, [body]);
 
+  const email = useSelector((state:StateEmailView) => state.emailView.email);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if(!email?.uuid)navigate("/emails");
+  }, [email]);
+  console.log(email);
   return (
     <Paper
       elevation={3}
@@ -31,10 +29,10 @@ const Email: React.FC = () => {
       }}
       ref={paperRef}
     >
-      <Typography variant="h5">Subject: {"subject"}</Typography>
-      <Typography variant="subtitle1">From: {"sender"}</Typography>
+      <Typography variant="h5">Subject: {email.subject}</Typography>
+      <Typography variant="subtitle1">From: {email.sender.email}</Typography>
       <Typography variant="body1" style={{ marginTop: "10px" }}>
-        {"body"}
+        {email.body}
       </Typography>
     </Paper>
   );

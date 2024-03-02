@@ -41,3 +41,11 @@ export interface RootState {
     status: string;
   };
 }
+export interface StateEmailView {
+  emailView: {
+    email: EmailInboxRow;
+    status: string;
+  };
+}
+
+export const EMAIL_VIEW = 'EMAIL_VIEW';
