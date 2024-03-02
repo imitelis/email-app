@@ -1,5 +1,5 @@
 import axiosInstance from "./api-client";
-import { SendEmail } from "../types/emails";
+import { SendEmail, FolderEmail } from "../types/emails";
 
 export const getInboxEmails = async (token: string) => {
   const config = {
@@ -35,6 +35,21 @@ export const patchReadEmail = async (token: string, email_uuid: string) => {
     },
   };
   return axiosInstance
-    .post(`/emails/inbox/open/${email_uuid}`, config)
+    .patch(`/emails/inbox/open/${email_uuid}`, config)
+    .then((res) => res.data);
+};
+
+export const patchFolderEmail = async (
+  token: string,
+  email_uuid: string,
+  folder: FolderEmail,
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return axiosInstance
+    .patch(`/emails/inbox/folder/${email_uuid}`, folder, config)
     .then((res) => res.data);
 };

@@ -16,6 +16,10 @@ export type SendEmail = {
   body: string;
 };
 
+export type FolderEmail = {
+  recipient_folder: number;
+};
+
 export interface EmailInboxRow {
   uuid: string;
   sender: {
@@ -48,4 +52,4 @@ export interface StateEmailView {
   };
 }
 
-export const EMAIL_VIEW = 'EMAIL_VIEW';
+export const EMAIL_VIEW = "EMAIL_VIEW";

@@ -215,7 +215,8 @@ jobs:
       - name: Visit EC2
         if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
         run: |
-          app_url=${{ secrets.PROD_PROXY_URL }}
+          app_url=$PROD_PROXY_URL
           curl -I $app_url
         env:
+          PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}

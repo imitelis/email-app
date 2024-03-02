@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEmails } from "../slices/emailSlice";
 import { AppDispatch } from "../slices/store";
 
-import { folderDict, formatDate } from "../utils";
-import { EmailInboxRow, RootState } from "../types/emails";
 import SearchInput from "./SearchInput";
 
+import { getCookie, folderDict, formatDate } from "../utils";
+import { EmailInboxRow, RootState } from "../types/emails";
+import { patchFolderEmail } from "../services/emails";
+
 import {
+  Alert,
   List,
   ListItem,
   ListItemText,
@@ -39,14 +42,13 @@ const EmailRow = ({
     onSelectEmail(email.uuid);
   };
 
-  const handleClick = (email:EmailInboxRow) => {
+  const handleClick = (email: EmailInboxRow) => {
     dispatch(getEmailsView(email));
     setTimeout(() => {
       navigate("/emails/view");
-    },100);
-    // onSelectEmail(isSelected ? "" : email.uuid);
+    }, 100);
   };
-  
+
   return (
     <>
       <ListItem
@@ -56,6 +58,7 @@ const EmailRow = ({
           justifyContent: "space-between",
           borderBottom: "1px solid #f0f0f0",
           padding: "12px 0",
+          cursor: "pointer",
           backgroundColor: isSelected
             ? "#f0f8ff"
             : email.read_date
@@ -76,7 +79,6 @@ const EmailRow = ({
         />
         <ListItemText
           onClick={() => handleClick(email)}
-
           primary={<Typography variant="body1">{subject}</Typography>}
         />
         <ListItemText
@@ -95,10 +97,14 @@ const EmailList = () => {
   const emails = useSelector((state: RootState) => state.emails.emails);
   const status = useSelector((state: RootState) => state.emails.status);
   const dispatch: AppDispatch = useDispatch();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isEmailSelected, setIsEmailSelected] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<number>(0);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+
+  const token = getCookie("FakeEmailToken");
 
   const handleSelectEmail = (uuid: string) => {
     setSelectedEmail(uuid === selectedEmail ? null : uuid);
@@ -127,9 +133,23 @@ const EmailList = () => {
     setSelectedFolder(Number(event.target.value));
   };
 
-  const handleMoveEmail = () => {
-    console.log(selectedEmail);
-    console.log(selectedFolder);
+  const handleMoveEmail = async () => {
+    if (token && selectedEmail && selectedFolder) {
+      try {
+        const updatedFolder = {
+          recipient_folder: selectedFolder,
+        };
+        await patchFolderEmail(token, selectedEmail, updatedFolder);
+        // console.log(selectedEmail);
+        // console.log(selectedFolder);
+        setSuccess("Email moved successfully");
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        // console.log(e)
+        setError("Something wrong happened. Please try again.");
+      }
+    }
   };
 
   return (
@@ -170,6 +190,24 @@ const EmailList = () => {
               >
                 Move
               </Button>
+            </Grid>
+            <Grid item>
+              {error && (
+                <Alert
+                  variant="filled"
+                  severity="error"
+                  onClose={() => setError("")}
+                >
+                  {error}
+                </Alert>
+              )}
+            </Grid>
+            <Grid item>
+              {success && (
+                <Alert severity="success" onClose={() => setSuccess("")}>
+                  {success}
+                </Alert>
+              )}
             </Grid>
           </>
         )}
