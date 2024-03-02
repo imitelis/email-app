@@ -13,7 +13,7 @@ const Email: React.FC = () => {
   
   useEffect(() => {
     if(!email?.uuid)navigate("/emails");
-  }, [email]);
+  }, [email, navigate]);
   console.log(email);
   return (
     <Paper
