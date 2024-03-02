@@ -1,5 +1,6 @@
 import SocialButton from "./SocialButton";
 import logo from "../assets/logo.avif";
+import CssBaseline from "@mui/material/CssBaseline";
 
 import { Container, Stack, Typography } from "@mui/material";
 import { GitHub } from "@mui/icons-material";
@@ -15,10 +16,11 @@ const Footer = () => {
         backgroundColor: "#f8f9fa",
         color: "#495057",
         padding: "30px",
-        zIndex: 2,
+        zIndex: 3,
       }}
     >
       <Container maxWidth="xl">
+        <CssBaseline />
         <Stack
           direction={{ xs: "column", md: "row" }}
           spacing={2}

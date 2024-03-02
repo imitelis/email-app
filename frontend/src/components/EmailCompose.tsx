@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Alert } from "@mui/material";
 import { postNewEmail } from "../services/emails";
+import { validEmail } from "../utils/validEmail";
 
 function MailComposer() {
   const [email, setEmail] = useState({
@@ -8,6 +9,9 @@ function MailComposer() {
     subject: "",
     body: "",
   });
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,18 +23,7 @@ function MailComposer() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    /*
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Accept", "application/json");
-    headers.append("Authorization", `Bearer ${cookies.FakeEmailToken}`);
-    fetch(`${import.meta.env.VITE_BACK_URL}/emails/`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(email),
-    });
-    
-    */
+    setError("");
     const myEmail = {
       to: email.to,
       subject: email.subject,
@@ -39,14 +32,25 @@ function MailComposer() {
     console.log(myEmail);
 
     const myToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwOTI2NTMwNiwianRpIjoiNDI4ZjQxNTQtYzMxNS00NDA4LTgzMzctZTBhOTQ3Y2YwNjg3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImRzYWF2ZWRyYUB1bmFsLmVkdS5jbyIsIm5iZiI6MTcwOTI2NTMwNiwiY3NyZiI6ImM5ZWU3Yjc1LTg3Y2MtNGNlYi05OGJhLTgxZjY2MjViYzhiZSJ9.SPGfUSdTH0IoOVvynRhC-hFuSFN4ZESduzv75JyzjZ8`;
-    postNewEmail(myToken, myEmail);
-    /*
-    setEmail({
-      to: "",
-      subject: "",
-      body: "",
-    });
-    */
+    if (!email.to || !email.subject || !email.body) {
+      setError("Please fill all the required fields*.");
+      return;
+    }
+
+    if (!validEmail(email.to)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (email.to && email.subject && email.body) {
+      try {
+        postNewEmail(myToken, myEmail);
+        setEmail({ to: "", subject: "", body: "" });
+        setSuccess("Email sent successfully!");
+      } catch (error) {
+        setError("Error sending email");
+      }
+    }
   };
 
   return (
@@ -82,6 +86,16 @@ function MailComposer() {
       <Button id="sendEmail" variant="contained" type="submit" color="primary">
         Send
       </Button>
+      {error && (
+        <Alert variant="filled" severity="error" onClose={() => setError("")}>
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert severity="success" onClose={() => setSuccess("")}>
+          {success}
+        </Alert>
+      )}
     </form>
   );
 }
