@@ -1,4 +1,4 @@
-import { EmailFolderDict } from "../types/dicts";
+import { EmailFolderDict } from "../types/emails";
 
 export const folderDict: EmailFolderDict = {
   0: "Inbox",

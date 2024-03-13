@@ -5,93 +5,22 @@ import { AppDispatch } from "../slices/store";
 
 import SearchInput from "./SearchInput";
 
-import { getCookie, folderDict, formatDate } from "../utils";
+import { getCookie, folderDict } from "../utils";
 import { EmailInboxRow, RootState } from "../types/emails";
 import { patchFolderEmail } from "../services/emails";
 
 import {
   Alert,
   List,
-  ListItem,
-  ListItemText,
-  Divider,
   Typography,
-  Checkbox,
   Button,
-  Grid,
   Select,
+  Grid,
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { getEmailsView } from "../slices/emailViewSlice";
 
-const EmailRow = ({
-  email,
-  isSelected,
-  onSelectEmail,
-}: {
-  email: EmailInboxRow;
-  isSelected: boolean;
-  onSelectEmail: (uuid: string) => void;
-}) => {
-  const { sender, subject, sent_date } = email;
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
-  const handleCheckboxChange = () => {
-    onSelectEmail(email.uuid);
-  };
-
-  const handleClick = (email: EmailInboxRow) => {
-    dispatch(getEmailsView(email));
-    setTimeout(() => {
-      navigate("/emails/view");
-    }, 100);
-  };
-
-  return (
-    <>
-      <ListItem
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "space-between",
-          borderBottom: "1px solid #f0f0f0",
-          padding: "12px 0",
-          cursor: "pointer",
-          backgroundColor: isSelected
-            ? "#f0f8ff"
-            : email.read_date
-              ? "#E8E8E8"
-              : "transparent",
-        }}
-      >
-        <Checkbox
-          checked={isSelected}
-          onChange={handleCheckboxChange}
-          color="primary"
-        />
-        <ListItemText
-          onClick={() => handleClick(email)}
-          primary={
-            <Typography variant="subtitle1">{sender.full_name}</Typography>
-          }
-        />
-        <ListItemText
-          onClick={() => handleClick(email)}
-          primary={<Typography variant="body1">{subject}</Typography>}
-        />
-        <ListItemText
-          onClick={() => handleClick(email)}
-          primary={
-            <Typography variant="body1">{formatDate(sent_date)}</Typography>
-          }
-        />
-      </ListItem>
-      <Divider />
-    </>
-  );
-};
+import EmailRow from "./EmailRow";
 
 const EmailList = () => {
   const emails = useSelector((state: RootState) => state.emails.emails);

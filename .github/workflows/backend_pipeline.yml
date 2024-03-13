@@ -1,6 +1,5 @@
 name: BackEnd Pipeline
 
-
 on:
   push:
     branches:
@@ -13,7 +12,6 @@ jobs:
   backend_testing: 
     runs-on: ubuntu-latest
     steps:
-    
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:          
@@ -39,29 +37,28 @@ jobs:
         run: |
           cd backend
           pip install -r reqs.txt
-      
-      - name: Outdated dependencies
+
+      - name: Safety dependencies
         run: |
           cd backend
-          pip list --outdated
+          safety check
 
-      - name: User unittest
+      - name: Black code
+        run: |
+          cd backend
+          black .
+
+      - name: Unit tests 
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          python3 tests/unit_user.py
+          pytest tests/unit_user.py tests/unit_email.py
 
-      - name: Email unittest
+      - name: API tests
         run: |
           cd backend
           export PYTHONPATH=$(pwd)
-          python3 tests/unit_email.py
-
-      - name: API pytest
-        run: |
-          cd backend
-          export PYTHONPATH=$(pwd)
-          pytest -s tests/test_api.py
+          pytest --pyargs tests/
         env:
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
@@ -79,86 +76,16 @@ jobs:
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
       
-      - name: Session API pytest
-        run: |
-          cd backend
-          export PYTHONPATH=$(pwd)
-          pytest -s tests/test_session_api.py
-        env:
-          FLASK_APP: ${{ secrets.FLASK_APP }}
-          FLASK_ENV: ${{ secrets.FLASK_ENV }}
-          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
-          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
-          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
-          DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          SERVER_NAME: ${{ secrets.SERVER_NAME }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          APP_URL: ${{ secrets.APP_URL }}
-          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
-          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      
-      - name: Users API pytest
-        run: |
-          cd backend
-          export PYTHONPATH=$(pwd)
-          pytest -s tests/test_users_api.py
-        env:
-          FLASK_APP: ${{ secrets.FLASK_APP }}
-          FLASK_ENV: ${{ secrets.FLASK_ENV }}
-          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
-          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
-          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
-          DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          SERVER_NAME: ${{ secrets.SERVER_NAME }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          APP_URL: ${{ secrets.APP_URL }}
-          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
-          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      
-      - name: Emails API pytest
-        run: |
-          cd backend
-          export PYTHONPATH=$(pwd)
-          pytest -s tests/test_emails_api.py
-        env:
-          FLASK_APP: ${{ secrets.FLASK_APP }}
-          FLASK_ENV: ${{ secrets.FLASK_ENV }}
-          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
-          FLASK_RUN_HOST: ${{ secrets.FLASK_RUN_HOST }}
-          FLASK_RUN_PORT: ${{ secrets.FLASK_RUN_PORT }}
-          DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          SERVER_NAME: ${{ secrets.SERVER_NAME }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          APP_URL: ${{ secrets.APP_URL }}
-          PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
-          DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-
-
   backend_deployment:
+    if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
     needs: backend_testing
     runs-on: ubuntu-latest
     steps:
-
       - name: SSH script
         uses: appleboy/ssh-action@v0.1.7
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           GIT_API_TOKEN: ${{ secrets.GIT_API_TOKEN }}
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_REPO: ${{ secrets.GIT_REPO }}
           FLASK_APP: ${{ secrets.FLASK_APP }}
           FLASK_ENV: ${{ secrets.FLASK_ENV }}
           FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
@@ -173,7 +100,6 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -213,10 +139,8 @@ jobs:
             gunicorn --bind 0.0.0.0:8000 main:app --daemon
 
       - name: Visit EC2
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
         run: |
           app_url=$PROD_PROXY_URL
           curl -I $app_url
         env:
           PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}

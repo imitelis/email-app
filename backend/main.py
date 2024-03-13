@@ -41,7 +41,7 @@ api.add_namespace(emails_router)
 # Start tracemalloc
 tracemalloc.start()
 
-#
+# Set origins
 DEV_FRONT_URL = os.getenv("DEV_FRONT_URL")
 PROD_FRONT_URL = os.getenv("PROD_FRONT_URL")
 

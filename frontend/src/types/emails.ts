@@ -52,4 +52,6 @@ export interface StateEmailView {
   };
 }
 
-export const EMAIL_VIEW = "EMAIL_VIEW";
+export interface EmailFolderDict {
+  [key: number]: string;
+}

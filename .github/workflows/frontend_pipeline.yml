@@ -1,6 +1,5 @@
 name: FrontEnd Pipeline
 
-
 on:
   push:
     branches:
@@ -13,7 +12,6 @@ jobs:
   frontend_testing:
     runs-on: ubuntu-latest
     steps:
-    
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3 
         with:          
@@ -29,16 +27,21 @@ jobs:
         run: |
           cd frontend
           npm install
-        
-      - name: Lint code
+
+      - name: Audit dependencies
         run: |
           cd frontend
-          npm run lint
+          npm audit
 
       - name: Prettier code
         run: |
           cd frontend
           npm run prettier
+
+      - name: Lint code
+        run: |
+          cd frontend
+          npm run lint
 
       - name: Jest tests
         run: |
@@ -58,41 +61,35 @@ jobs:
           cd frontend
           npm run build
 
-  
   frontend_deployment:
+    if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
     needs: frontend_testing
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Secrets flyctl
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
         run: |
           cd frontend
           flyctl secrets set PROD_PROXY_URL=$PROD_PROXY_URL
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
       - name: Deploy flyctl
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
         run: |
           cd frontend
           flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
-      - name: Visit app
-        if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipfront') }}
+      - name: Visit app        
         run: |
-          app_url=${{ secrets.APP_URL }}
+          app_url=$APP_URL
           curl -I $app_url
         env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+          APP_URL: ${{ secrets.APP_URL }}

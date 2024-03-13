@@ -9,4 +9,13 @@ to our models, but not all fields are
 here, since they consider user input
 """
 
-__all__ = ["InviteBase", "LoginBase", "UserBase", "UserInputBase", "UserEditBase", "EmailBase", "EmailInputBase", "EmailFolderBase"]
+__all__ = [
+    "InviteBase",
+    "LoginBase",
+    "UserBase",
+    "UserInputBase",
+    "UserEditBase",
+    "EmailBase",
+    "EmailInputBase",
+    "EmailFolderBase",
+]

@@ -1,9 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Alert } from "@mui/material";
+
+import { getCookie } from "../utils";
 import { postNewEmail } from "../services/emails";
 import { validEmail } from "../utils/validEmail";
 
-function MailComposer() {
+const MailComposer = () => {
   const [email, setEmail] = useState({
     to: "",
     subject: "",
@@ -21,7 +23,7 @@ function MailComposer() {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     const myEmail = {
@@ -29,9 +31,9 @@ function MailComposer() {
       subject: email.subject,
       body: email.body,
     };
-    console.log(myEmail);
+    // console.log(myEmail);
 
-    const myToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwOTI2NTMwNiwianRpIjoiNDI4ZjQxNTQtYzMxNS00NDA4LTgzMzctZTBhOTQ3Y2YwNjg3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImRzYWF2ZWRyYUB1bmFsLmVkdS5jbyIsIm5iZiI6MTcwOTI2NTMwNiwiY3NyZiI6ImM5ZWU3Yjc1LTg3Y2MtNGNlYi05OGJhLTgxZjY2MjViYzhiZSJ9.SPGfUSdTH0IoOVvynRhC-hFuSFN4ZESduzv75JyzjZ8`;
+    const token = getCookie("FakeEmailToken");
     if (!email.to || !email.subject || !email.body) {
       setError("Please fill all the required fields*.");
       return;
@@ -44,7 +46,7 @@ function MailComposer() {
 
     if (email.to && email.subject && email.body) {
       try {
-        postNewEmail(myToken, myEmail);
+        await postNewEmail(token, myEmail);
         setEmail({ to: "", subject: "", body: "" });
         setSuccess("Email sent successfully!");
       } catch (error) {
@@ -58,6 +60,16 @@ function MailComposer() {
       onSubmit={handleSubmit}
       style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
     >
+      {error && (
+        <Alert variant="filled" severity="error" onClose={() => setError("")}>
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert severity="success" onClose={() => setSuccess("")}>
+          {success}
+        </Alert>
+      )}
       <TextField
         label="To"
         type="email"
@@ -86,18 +98,8 @@ function MailComposer() {
       <Button id="sendEmail" variant="contained" type="submit" color="primary">
         Send
       </Button>
-      {error && (
-        <Alert variant="filled" severity="error" onClose={() => setError("")}>
-          {error}
-        </Alert>
-      )}
-      {success && (
-        <Alert severity="success" onClose={() => setSuccess("")}>
-          {success}
-        </Alert>
-      )}
     </form>
   );
-}
+};
 
 export default MailComposer;
