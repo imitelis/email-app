@@ -71,17 +71,10 @@ jobs:
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Secrets flyctl
-        run: |
-          cd frontend
-          flyctl secrets set PROD_PROXY_URL=$PROD_PROXY_URL
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          PROD_PROXY_URL: ${{ secrets.PROD_PROXY_URL }}
-
       - name: Deploy flyctl
         run: |
           cd frontend
+          flyctl secrets set PROD_PROXY_URL=$PROD_PROXY_URL
           flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

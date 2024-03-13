@@ -36,6 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
+          pip install --upgrade pip
           pip install -r reqs.txt
 
       - name: Safety dependencies
