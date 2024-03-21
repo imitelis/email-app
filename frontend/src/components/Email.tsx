@@ -15,11 +15,12 @@ const Email: React.FC = () => {
   useEffect(() => {
     if (!email?.uuid) navigate("/emails");
   }, [email, navigate]);
-  // console.log(email);
 
   const handleBack = () => {
     navigate("/emails");
   };
+
+  if(!email.uuid) return (<div></div>);
 
   return (
     <Paper
