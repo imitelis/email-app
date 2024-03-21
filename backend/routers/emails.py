@@ -3,16 +3,19 @@ import os
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
-
+from elasticsearch import helpers
 import threading
 from datetime import datetime
 from dotenv import load_dotenv
 from config.db import db
 from utils.smtp import send_email
+import json
 
 from bases import EmailBase, EmailInputBase, EmailFolderBase
 from models import User, Email
+from utils.elastic_client import get_client
 
+es = get_client()
 
 load_dotenv()
 APP_URL = os.getenv("PROD_FRONT_URL")
@@ -135,7 +138,9 @@ class InboxEmailAPI(Resource):
         if not db_user:
             raise BadRequest("Missing or incorrect Token")
 
+        print(db_user.uuid)
         user_emails = Email.query.filter_by(recipient_uuid=db_user.uuid).all()
+
         return user_emails, 200
 
 
@@ -204,6 +209,7 @@ class SentEmailAPI(Resource):
             raise BadRequest("Missing or incorrect Token")
 
         user_emails = Email.query.filter_by(sender_uuid=db_user.uuid).all()
+
         return user_emails, 200
 
 
@@ -312,3 +318,45 @@ class InboxEmailAPI(Resource):
         db.session.commit()
 
         return db_email, 200
+
+
+@router.route("/inbox/search")
+class SearchInboxEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    @router.marshal_list_with(EmailBase)
+    def get(self):
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest("Missing or incorrect Token")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "public_email_recipient_uuid": db_user.uuid
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": "here-goes-the-search",#Cambiar esto con los datos del front
+                                "fields": ["public_email_subject", "public_email_body"],
+                                "fuzziness": "AUTO"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        res = es.search(index="search-emails", body=query, size=10)
+        emails = []
+        for hit in res["hits"]["hits"]:
+            email = hit["_source"]
+            email["uuid"] = hit["_id"]
+            emails.append(email)
+
+        return emails, 200
