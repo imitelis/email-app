@@ -18,9 +18,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import SentIcon from "@mui/icons-material/Send";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import MailComposer from "./EmailCompose";
-import EmailList from "./EmailInbox";
+import EmailInbox from "./EmailInbox";
+import EmailsSent from "./EmailsSent";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import { clearBasicUserInfo } from "../slices/authSlice";
@@ -39,7 +41,13 @@ const itemsMenu: {
     id: "inbox",
     route: "",
     name: "Inbox",
-    component: <EmailList />,
+    component: <EmailInbox />,
+  },
+  {
+    id: "sent",
+    route: "sent",
+    name: "Sent",
+    component: <EmailsSent />,
   },
   {
     id: "send-email",
@@ -263,7 +271,9 @@ export default function SideBar() {
                     justifyContent: "center",
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index === 0 && <InboxIcon />}
+                  {index === 1 && <SentIcon />}
+                  {index === 2 && <MailIcon />}
                 </ListItemIcon>
                 <ListItemText
                   primary={item.name}

@@ -68,3 +68,19 @@ export const searchEmails = async (
          return res.data
     })
 }
+
+export const searchSentEmails = async (
+  token: string,
+  query: string,
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+  return axiosInstance
+    .get(`emails/sent/search/${query}`, config)
+    .then((res) => {
+         return res.data
+    })
+}

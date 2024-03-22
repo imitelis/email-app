@@ -380,3 +380,61 @@ class SearchInboxEmailAPI(Resource):
             emails.append(formatted_email)
             print(emails)
         return emails, 200
+@router.route("/sent/search/<string:search_query>")
+class SearchSentEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    @router.marshal_list_with(EmailBase)
+    def get(self, search_query):
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest("Missing or incorrect Token")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "public_email_sender_uuid": db_user.uuid
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": search_query,
+                                "fields": ["public_email_subject", "public_email_body"],
+                                "fuzziness": "AUTO"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        res = es.search(index="search-emails", body=query, size=10)
+        emails = []
+        for hit in res["hits"]["hits"]:
+            email = hit["_source"]
+            recipient_uuid = email['public_email_recipient_uuid']
+            db_recipient = User.query.get(recipient_uuid)
+            formatted_email = {
+                'uuid': email['public_email_uuid'],
+                'sender': {
+                    'uuid': email['public_email_sender_uuid'],
+                    'full_name': db_user.full_name,
+                    'email': db_user.email
+                },
+                'recipient': {
+                    'uuid': email['public_email_recipient_uuid'],
+                    'full_name': db_recipient.full_name if db_recipient else None,
+                    'email': db_recipient.email if db_recipient else None
+                },
+                'subject': email['public_email_subject'],
+                'body': email['public_email_body'],
+                'sent_date': email['public_email_sent_date'],
+                'read_date': email['public_email_read_date'],
+                'recipient_folder': email['public_email_recipient_folder']
+            }
+            emails.append(formatted_email)
+        return emails, 200
