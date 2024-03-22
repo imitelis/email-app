@@ -19,6 +19,17 @@ export const getSentEmails = async (token: string) => {
   return axiosInstance.get(`/emails/sent`, config).then((res) => res.data);
 };
 
+export const getFolderEmails = async (token: string, folderId: number) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return axiosInstance
+    .get(`/emails/inbox/folder/${folderId}`, config)
+    .then((res) => res.data);
+}
+
 export const postNewEmail = async (token: string, email: SendEmail) => {
   const config = {
     headers: {
@@ -80,6 +91,23 @@ export const searchSentEmails = async (
   }
   return axiosInstance
     .get(`emails/sent/search/${query}`, config)
+    .then((res) => {
+         return res.data
+    })
+}
+
+export const searchFolderEmails = async (
+  token: string,
+  query: string,
+  folderId: number
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+  return axiosInstance
+    .get(`emails/inbox/search/${folderId}/${query}`, config)
     .then((res) => {
          return res.data
     })

@@ -24,6 +24,7 @@ interface Props {
     searchedStatus: string;
     clearSearchedEmails : () => void;
     handleSearchEnter : (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    isSentPage: boolean;
 }
 
 const EmailList = (props: Props) => {
@@ -34,6 +35,7 @@ const EmailList = (props: Props) => {
     searchedStatus,
     clearSearchedEmails,
     handleSearchEnter,
+    isSentPage,
   } = props;
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -43,7 +45,8 @@ const EmailList = (props: Props) => {
   const token = getCookie("FakeEmailToken");
 
   const handleSelectEmail = (uuid: string) => {
-    setSelectedEmail(uuid === selectedEmail ? null : uuid);
+    if(isSentPage) return;
+    setSelectedEmail(uuid === selectedEmail? null : uuid);
   };
 
   useEffect(() => {
@@ -78,7 +81,7 @@ const EmailList = (props: Props) => {
             onClear={clearSearchedEmails}
           />
         </Grid>
-        {isEmailSelected && (
+        { isEmailSelected && (
           <>
             <Grid item>
               <Typography variant="body2" color="textSecondary">
@@ -146,6 +149,7 @@ const EmailList = (props: Props) => {
                 key={email.uuid}
                 email={email}
                 isSelected={selectedEmail === email.uuid}
+                isSentPage={isSentPage}
                 onSelectEmail={handleSelectEmail}
               />
             ))
@@ -155,6 +159,7 @@ const EmailList = (props: Props) => {
                 key={email.uuid}
                 email={email}
                 isSelected={selectedEmail === email.uuid}
+                isSentPage={isSentPage}
                 onSelectEmail={handleSelectEmail}
               />
             ))

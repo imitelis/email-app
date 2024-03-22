@@ -5,6 +5,8 @@ import { emailsReducer } from "./emailSlice";
 import { emailsSentReducer } from "./sentEmailsSlice";
 import { emailViewReducer } from "./emailViewSlice";
 import { emailsSearchReducer } from "./searchEmailsSlice";
+import { emailsFolderReducer } from "./folderEmailSlice";
+import { emailsFolderSearchReducer } from "./searchFolderEmailSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     emailsSent: emailsSentReducer,
     emailsSearch: emailsSearchReducer,
     emailsSentSearch: emailsSearchReducer,
+    emailsFolder: emailsFolderReducer,
+    emailsFolderSearch: emailsFolderSearchReducer,
     auth: authReducer,
     user: userReducer,
     emailView: emailViewReducer,

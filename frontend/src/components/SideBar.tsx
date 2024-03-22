@@ -19,10 +19,15 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import SentIcon from "@mui/icons-material/Send";
+import StarIcon from '@mui/icons-material/Star';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { Route, Routes, useNavigate } from "react-router-dom";
 import MailComposer from "./EmailCompose";
 import EmailInbox from "./EmailInbox";
 import EmailsSent from "./EmailsSent";
+import EmailFolders from "./EmailFolders";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import { clearBasicUserInfo } from "../slices/authSlice";
@@ -48,6 +53,30 @@ const itemsMenu: {
     route: "sent",
     name: "Sent",
     component: <EmailsSent />,
+  },
+  {
+    id: "important",
+    route: "important",
+    name: "Important",
+    component: <EmailFolders folderId={1} />,
+  },
+  {
+    id: "social",
+    route: "social",
+    name: "Social",
+    component: <EmailFolders folderId={2} />,
+  },
+  {
+    id: "spam",
+    route: "spam",
+    name: "Spam",
+    component: <EmailFolders folderId={3} />,
+  },
+  {
+    id: "trash",
+    route: "trash",
+    name: "Trash",
+    component: <EmailFolders folderId={4} />,
   },
   {
     id: "send-email",
@@ -273,7 +302,11 @@ export default function SideBar() {
                 >
                   {index === 0 && <InboxIcon />}
                   {index === 1 && <SentIcon />}
-                  {index === 2 && <MailIcon />}
+                  {index === 2 && <StarIcon/>}
+                  {index === 3 && <ConnectWithoutContactIcon />}
+                  {index === 4 && <ReportProblemIcon />}
+                  {index === 5 && <DeleteIcon />}
+                  {index === 6 && <MailIcon />}
                 </ListItemIcon>
                 <ListItemText
                   primary={item.name}

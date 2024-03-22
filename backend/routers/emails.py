@@ -139,7 +139,6 @@ class InboxEmailAPI(Resource):
         if not db_user:
             raise BadRequest("Missing or incorrect Token")
 
-        print(db_user.uuid)
         user_emails = Email.query.filter_by(recipient_uuid=db_user.uuid).all()
 
         return user_emails, 200
@@ -319,6 +318,37 @@ class InboxEmailAPI(Resource):
         db.session.commit()
 
         return db_email, 200
+    
+@router.doc(security="JWTBearer")
+# Starting endpoint
+@router.route("/inbox/folder/<int:folder>")
+class InboxEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    # What it returns
+    @router.marshal_list_with(EmailBase)
+    # http request
+    def get(self, folder):
+        """
+        Return all Received Emails with:
+            uuid: uuid
+            sender: { uuid: uuid, full_name: str, email: str }
+            recipient: { uuid: uuid, full_name: str, email: str }
+            subject: str
+            body: str
+            sent_date: date
+            read_date: date
+            recipient_folder: int
+        """
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest("Missing or incorrect Token")
+
+        user_emails = Email.query.filter_by(recipient_uuid=db_user.uuid, recipient_folder=folder).all()
+
+        return user_emails, 200
 
 
 @router.route("/inbox/search/<string:search_query>")
@@ -344,7 +374,7 @@ class SearchInboxEmailAPI(Resource):
                         },
                         {
                             "multi_match": {
-                                "query": search_query,#Cambiar esto con los datos del front
+                                "query": search_query,
                                 "fields": ["public_email_subject", "public_email_body"],
                                 "fuzziness": "AUTO"
                             }
@@ -363,13 +393,13 @@ class SearchInboxEmailAPI(Resource):
                 'uuid': email['public_email_uuid'],
                 'sender': {
                     'uuid': email['public_email_sender_uuid'],
-                    'full_name': db_sender.full_name,  # You can fetch full name from sender UUID if available
-                    'email': db_sender.email       # You can fetch email from sender UUID if available
+                    'full_name': db_sender.full_name,
+                    'email': db_sender.email
                 },
                 'recipient': {
                     'uuid': email['public_email_recipient_uuid'],
-                    'full_name': db_user.full_name,  # You can fetch full name from recipient UUID if available
-                    'email': db_user.email       # You can fetch email from recipient UUID if available
+                    'full_name': db_user.full_name,
+                    'email': db_user.email
                 },
                 'subject': email['public_email_subject'],
                 'body': email['public_email_body'],
@@ -378,8 +408,9 @@ class SearchInboxEmailAPI(Resource):
                 'recipient_folder': email['public_email_recipient_folder']
             }
             emails.append(formatted_email)
-            print(emails)
         return emails, 200
+    
+
 @router.route("/sent/search/<string:search_query>")
 class SearchSentEmailAPI(Resource):
     method_decorators = [jwt_required()]
@@ -438,3 +469,69 @@ class SearchSentEmailAPI(Resource):
             }
             emails.append(formatted_email)
         return emails, 200
+
+
+@router.route("/inbox/search/<int:folder>/<string:search_query>")
+class SearchFolderEmailAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    @router.marshal_list_with(EmailBase)
+    def get(self, folder, search_query):
+        jwt_email = get_jwt_identity()
+
+        db_user = User.query.filter_by(email=jwt_email).first()
+        if not db_user:
+            raise BadRequest("Missing or incorrect Token")
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "public_email_sender_uuid": db_user.uuid
+                            }
+                        },
+                        {
+                            "match": {
+                                "public_email_recipient_folder": folder
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": search_query,
+                                "fields": ["public_email_subject", "public_email_body"],
+                                "fuzziness": "AUTO"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        res = es.search(index="search-emails", body=query, size=10)
+        emails = []
+        for hit in res["hits"]["hits"]:
+            email = hit["_source"]
+            recipient_uuid = email['public_email_recipient_uuid']
+            db_recipient = User.query.get(recipient_uuid)
+            formatted_email = {
+                'uuid': email['public_email_uuid'],
+                'sender': {
+                    'uuid': email['public_email_sender_uuid'],
+                    'full_name': db_user.full_name,
+                    'email': db_user.email
+                },
+                'recipient': {
+                    'uuid': email['public_email_recipient_uuid'],
+                    'full_name': db_recipient.full_name if db_recipient else None,
+                    'email': db_recipient.email if db_recipient else None
+                },
+                'subject': email['public_email_subject'],
+                'body': email['public_email_body'],
+                'sent_date': email['public_email_sent_date'],
+                'read_date': email['public_email_read_date'],
+                'recipient_folder': email['public_email_recipient_folder']
+            }
+            emails.append(formatted_email)
+        return emails, 200
+

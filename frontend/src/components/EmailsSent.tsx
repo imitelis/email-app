@@ -18,6 +18,7 @@ const EmailsSent = () => {
 
   useEffect(() => {
     dispatch(getEmailsSent());
+    dispatch(reset());
   }, []);
 
   const clearSearchedEmails = () => {
@@ -44,6 +45,7 @@ const EmailsSent = () => {
       searchedStatus={searchedStatus}
       clearSearchedEmails={clearSearchedEmails}
       handleSearchEnter={handleSearchEnter}
+      isSentPage={true}
     />
   );
 };
