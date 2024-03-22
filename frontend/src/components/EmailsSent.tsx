@@ -1,23 +1,23 @@
 import { useSelector } from "react-redux";
 import EmailList from "./EmailList.tsx";
 import { RootState } from "../types/emails.ts";
-import { getEmails } from "../slices/emailSlice";
-import { emailsSearch, reset } from "../slices/searchEmailsSlice";
+import { getEmailsSent } from "../slices/sentEmailsSlice.ts";
+import { emailsSearch, reset } from "../slices/searchSentEmailsSlice.ts";
 import { useEffect } from "react";
 import { getCookie } from "../utils";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../slices/store";
 
-const EmailInbox = () => {
-  const emails = useSelector((state: RootState) => state.emails.emails);
-  const status = useSelector((state: RootState) => state.emails.status);
-  const searchedEmails = useSelector((state: RootState) => state.emailsSearch.emails);
-  const searchedStatus = useSelector((state: RootState) => state.emailsSearch.status);
+const EmailsSent = () => {
+  const emails = useSelector((state: RootState) => state.emailsSent.emails);
+  const status = useSelector((state: RootState) => state.emailsSent.status);
+  const searchedEmails = useSelector((state: RootState) => state.emailsSentSearch.emails);
+  const searchedStatus = useSelector((state: RootState) => state.emailsSentSearch.status);
   const token = getCookie("FakeEmailToken");
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getEmails());
+    dispatch(getEmailsSent());
     dispatch(reset());
   }, []);
 
@@ -45,9 +45,9 @@ const EmailInbox = () => {
       searchedStatus={searchedStatus}
       clearSearchedEmails={clearSearchedEmails}
       handleSearchEnter={handleSearchEnter}
-      isSentPage={false}
+      isSentPage={true}
     />
   );
 };
 
-export default EmailInbox;
+export default EmailsSent;

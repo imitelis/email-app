@@ -17,10 +17,12 @@ import {
 const EmailRow = ({
   email,
   isSelected,
+  isSentPage,
   onSelectEmail,
 }: {
   email: EmailInboxRow;
   isSelected: boolean;
+  isSentPage: boolean;
   onSelectEmail: (uuid: string) => void;
 }) => {
   const { sender, subject, sent_date } = email;
@@ -54,11 +56,14 @@ const EmailRow = ({
               : "transparent",
         }}
       >
-        <Checkbox
-          checked={isSelected}
-          onChange={handleCheckboxChange}
-          color="primary"
-        />
+        {!isSentPage && (
+          <Checkbox
+            checked={isSelected}
+            onChange={handleCheckboxChange}
+            color="primary"
+          />
+        )}
+
         <ListItemText
           onClick={() => handleClick(email)}
           primary={

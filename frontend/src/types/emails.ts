@@ -43,6 +43,26 @@ export interface RootState {
   emails: {
     emails: EmailInboxRow[];
     status: string;
+  },
+  emailsSent: {
+    emails: EmailInboxRow[];
+    status: string;
+  },
+  emailsSearch: {
+    emails: EmailInboxRow[];
+    status: string;
+  };
+  emailsSentSearch: {
+    emails: EmailInboxRow[];
+    status: string;
+  };
+  emailsFolder: {
+    emails: EmailInboxRow[];
+    status: string;
+  };
+  emailsFolderSearch: {
+    emails: EmailInboxRow[];
+    status: string;
   };
 }
 export interface StateEmailView {
