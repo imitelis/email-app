@@ -3,17 +3,17 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const SearchInput = ({
   placeholder,
-  onChange,
+  onEnterUp
 }: {
   placeholder: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onEnterUp: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }) => {
   return (
     <TextField
       id="search"
       name="search"
       placeholder={placeholder}
-      onChange={onChange}
+      onKeyUp={onEnterUp}
       variant="outlined"
       InputProps={{
         startAdornment: <SearchIcon color="action" />,

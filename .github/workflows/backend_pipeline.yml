@@ -76,7 +76,8 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      
+          ELASTIC_USER: ${{ secrets.ELASTIC_USER }}
+          ELASTIC_PASSWORD: ${{secrets.ELASTIC_PASSWORD}}
   backend_deployment:
     if: ${{ github.event_name == 'push' && !contains(toJson(github.event.commits.*.message), '#skipback') }}
     needs: backend_testing

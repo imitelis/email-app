@@ -53,3 +53,18 @@ export const patchFolderEmail = async (
     .patch(`/emails/inbox/folder/${email_uuid}`, folder, config)
     .then((res) => res.data);
 };
+export const searchEmails = async (
+  token: string,
+  query: string,
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+  return axiosInstance
+    .get(`emails/inbox/search/${query}`, config)
+    .then((res) => {
+         return res.data
+    })
+}

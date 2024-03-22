@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmails } from "../slices/emailSlice";
 import { AppDispatch } from "../slices/store";
-
+import { searchEmails } from "../services/emails";
 import SearchInput from "./SearchInput";
 
 import { getCookie, folderDict } from "../utils";
@@ -32,7 +32,7 @@ const EmailList = () => {
   const [isEmailSelected, setIsEmailSelected] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<number>(0);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-
+  const [filteredEmails, setFilterdEmails] = useState(emails)
   const token = getCookie("FakeEmailToken");
 
   const handleSelectEmail = (uuid: string) => {
@@ -50,14 +50,20 @@ const EmailList = () => {
   useEffect(() => {
     dispatch(getEmails());
   }, [dispatch]);
-  const filteredEmails = emails.filter((email: EmailInboxRow) =>
-    email.subject.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
 
+  const handleSearchEnter = async (event: KeyboardEvent) => {
+    const inputValue = event.target?.value
+    if (event.key === 'Enter' && token && inputValue !== ''){
+
+      try {
+        const res = await searchEmails(token, inputValue)      
+        setFilterdEmails(res)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
   const handleChangeFolder = (event: SelectChangeEvent<number>) => {
     setSelectedFolder(Number(event.target.value));
   };
@@ -85,7 +91,7 @@ const EmailList = () => {
     <>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={6}>
-          <SearchInput placeholder="Search" onChange={handleSearchChange} />
+          <SearchInput placeholder="Search" onEnterUp={handleSearchEnter} />
         </Grid>
         {isEmailSelected && (
           <>
@@ -145,7 +151,7 @@ const EmailList = () => {
         <p>Loading...</p>
       ) : status === "failed" ? (
         <p>Failed to load emails</p>
-      ) : (
+      ) : filteredEmails.length !== 0 ? (
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {filteredEmails.map((email: EmailInboxRow) => (
             <EmailRow
@@ -156,7 +162,7 @@ const EmailList = () => {
             />
           ))}
         </List>
-      )}
+      ) : <p>No emails found</p>}
     </>
   );
 };
