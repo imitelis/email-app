@@ -175,7 +175,7 @@ export default function SideBar() {
     route: string;
   }
 
-  const _clickOptiopn = (evt: evtType) => {
+  const _clickOption = (evt: evtType) => {
     navigate(`/emails/${evt.route}`);
   };
 
@@ -281,7 +281,7 @@ export default function SideBar() {
         <List>
           {itemsMenu.map((item, index) => (
             <ListItem
-              onClick={() => _clickOptiopn(item)}
+              onClick={() => _clickOption(item)}
               key={item.name}
               disablePadding
               sx={{ display: "block" }}
