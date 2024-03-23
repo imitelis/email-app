@@ -1,23 +1,19 @@
 # routers/emails.py
 import os
-import uuid
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
-from elasticsearch import helpers
 import threading
 from datetime import datetime
 from dotenv import load_dotenv
 from config.db import db
 from utils.smtp import send_email
-import json
 
 from bases import EmailBase, EmailInputBase, EmailFolderBase
 from models import User, Email
-from utils.elastic_client import get_client
+from utils.elastic_client import get_client, format_emails, format_email_to_doc
 
 es = get_client()
-
 load_dotenv()
 APP_URL = os.getenv("PROD_FRONT_URL")
 
@@ -70,10 +66,10 @@ class EmailAPI(Resource):
             subject=email["subject"],
             body=email["body"],
         )
-
         db.session.add(new_email)
         db.session.commit()
-
+        doc = format_email_to_doc(new_email)
+        es.index(index="search-emails", document=doc, pipeline="ml-inference-search-emails")
         # SMTP part
         email_thread = threading.Thread(
             target=send_email_background,
@@ -87,29 +83,30 @@ class EmailAPI(Resource):
 
         return new_email, 201
 
-    # What it returns
-    @router.marshal_list_with(EmailBase)
-    # http request
-    def get(self):
-        """
-        Return all Emails with:
-            uuid: uuid
-            sender: { uuid: uuid, full_name: str, email: str }
-            recipient: { uuid: uuid, full_name: str, email: str }
-            subject: str
-            body: str
-            sent_date: date
-            read_date: date
-            recipient_folder: int
-        """
-        jwt_email = get_jwt_identity()
 
-        db_user = User.query.filter_by(email=jwt_email).first()
-        if not db_user:
-            raise BadRequest("Missing or incorrect Token")
+# What it returns
+@router.marshal_list_with(EmailBase)
+# http request
+def get(self):
+    """
+    Return all Emails with:
+        uuid: uuid
+        sender: { uuid: uuid, full_name: str, email: str }
+        recipient: { uuid: uuid, full_name: str, email: str }
+        subject: str
+        body: str
+        sent_date: date
+        read_date: date
+        recipient_folder: int
+    """
+    jwt_email = get_jwt_identity()
 
-        user_emails = Email.query.all()
-        return user_emails, 200
+    db_user = User.query.filter_by(email=jwt_email).first()
+    if not db_user:
+        raise BadRequest("Missing or incorrect Token")
+
+    user_emails = Email.query.all()
+    return user_emails, 200
 
 
 @router.doc(security="JWTBearer")
@@ -318,7 +315,8 @@ class InboxEmailAPI(Resource):
         db.session.commit()
 
         return db_email, 200
-    
+
+
 @router.doc(security="JWTBearer")
 # Starting endpoint
 @router.route("/inbox/folder/<int:folder>")
@@ -366,50 +364,51 @@ class SearchInboxEmailAPI(Resource):
         query = {
             "query": {
                 "bool": {
-                    "must": [
+                    "must": {
+                        "match": {"recipient_uuid": db_user.uuid}
+                    },
+                    "should": [
                         {
-                            "match": {
-                                "public_email_recipient_uuid": db_user.uuid
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "query": search_query,
-                                "fields": ["public_email_subject", "public_email_body"],
-                                "fuzziness": "AUTO"
+                            "text_expansion": {
+                                "ml.inference.email_body_expanded.predicted_value": {
+                                    "model_text": search_query,
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "boost": 1
+                                }
                             }
                         }
                     ]
                 }
-            }
+            },
+            "min_score": 10
         }
         res = es.search(index="search-emails", body=query, size=10)
         emails = []
         for hit in res["hits"]["hits"]:
             email = hit["_source"]
-            sender_uuid = email['public_email_sender_uuid']
+            sender_uuid = email['sender_uuid']
             db_sender = User.query.get(sender_uuid)
             formatted_email = {
-                'uuid': email['public_email_uuid'],
+                'uuid': email['email_uuid'],
                 'sender': {
-                    'uuid': email['public_email_sender_uuid'],
+                    'uuid': email['sender_uuid'],
                     'full_name': db_sender.full_name,
                     'email': db_sender.email
                 },
                 'recipient': {
-                    'uuid': email['public_email_recipient_uuid'],
+                    'uuid': email['recipient_uuid'],
                     'full_name': db_user.full_name,
                     'email': db_user.email
                 },
-                'subject': email['public_email_subject'],
-                'body': email['public_email_body'],
-                'sent_date': email['public_email_sent_date'],
-                'read_date': email['public_email_read_date'],
-                'recipient_folder': email['public_email_recipient_folder']
+                'subject': email['email_subject'],
+                'body': email['email_body'],
+                'sent_date': email['sent_date'],
+                'read_date': email['read_date'],
+                'recipient_folder': email['folder']
             }
             emails.append(formatted_email)
         return emails, 200
-    
+
 
 @router.route("/sent/search/<string:search_query>")
 class SearchSentEmailAPI(Resource):
@@ -426,48 +425,26 @@ class SearchSentEmailAPI(Resource):
         query = {
             "query": {
                 "bool": {
-                    "must": [
+                    "must": {
+                        "match": {"sender_uuid": db_user.uuid}
+                    },
+                    "should": [
                         {
-                            "match": {
-                                "public_email_sender_uuid": db_user.uuid
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "query": search_query,
-                                "fields": ["public_email_subject", "public_email_body"],
-                                "fuzziness": "AUTO"
+                            "text_expansion": {
+                                "ml.inference.email_body_expanded.predicted_value": {
+                                    "model_text": search_query,
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "boost": 1
+                                }
                             }
                         }
                     ]
                 }
-            }
+            },
+            "min_score": 10
         }
         res = es.search(index="search-emails", body=query, size=10)
-        emails = []
-        for hit in res["hits"]["hits"]:
-            email = hit["_source"]
-            recipient_uuid = email['public_email_recipient_uuid']
-            db_recipient = User.query.get(recipient_uuid)
-            formatted_email = {
-                'uuid': email['public_email_uuid'],
-                'sender': {
-                    'uuid': email['public_email_sender_uuid'],
-                    'full_name': db_user.full_name,
-                    'email': db_user.email
-                },
-                'recipient': {
-                    'uuid': email['public_email_recipient_uuid'],
-                    'full_name': db_recipient.full_name if db_recipient else None,
-                    'email': db_recipient.email if db_recipient else None
-                },
-                'subject': email['public_email_subject'],
-                'body': email['public_email_body'],
-                'sent_date': email['public_email_sent_date'],
-                'read_date': email['public_email_read_date'],
-                'recipient_folder': email['public_email_recipient_folder']
-            }
-            emails.append(formatted_email)
+        emails = format_emails(res, db_user)
         return emails, 200
 
 
@@ -486,52 +463,29 @@ class SearchFolderEmailAPI(Resource):
         query = {
             "query": {
                 "bool": {
-                    "must": [
-                        {
-                            "match": {
-                                "public_email_sender_uuid": db_user.uuid
-                            }
-                        },
-                        {
-                            "match": {
-                                "public_email_recipient_folder": folder
-                            }
-                        },
-                        {
-                            "multi_match": {
-                                "query": search_query,
-                                "fields": ["public_email_subject", "public_email_body"],
-                                "fuzziness": "AUTO"
+                    "must": [{
+                        "match": {"sender_uuid": db_user.uuid}
+                    },
+                    {
+                        "match": {
+                            "public_email_recipient_folder": folder
+                        }
+                    }],
+                "should": [
+                    {
+                        "text_expansion": {
+                            "ml.inference.email_body_expanded.predicted_value": {
+                                "model_text": search_query,
+                                "model_id": ".elser_model_2_linux-x86_64",
+                                "boost": 1
                             }
                         }
-                    ]
-                }
+                    }
+                ]
             }
+        },
+        "min_score": 10
         }
         res = es.search(index="search-emails", body=query, size=10)
-        emails = []
-        for hit in res["hits"]["hits"]:
-            email = hit["_source"]
-            recipient_uuid = email['public_email_recipient_uuid']
-            db_recipient = User.query.get(recipient_uuid)
-            formatted_email = {
-                'uuid': email['public_email_uuid'],
-                'sender': {
-                    'uuid': email['public_email_sender_uuid'],
-                    'full_name': db_user.full_name,
-                    'email': db_user.email
-                },
-                'recipient': {
-                    'uuid': email['public_email_recipient_uuid'],
-                    'full_name': db_recipient.full_name if db_recipient else None,
-                    'email': db_recipient.email if db_recipient else None
-                },
-                'subject': email['public_email_subject'],
-                'body': email['public_email_body'],
-                'sent_date': email['public_email_sent_date'],
-                'read_date': email['public_email_read_date'],
-                'recipient_folder': email['public_email_recipient_folder']
-            }
-            emails.append(formatted_email)
+        emails = format_emails(res, db_user)
         return emails, 200
-
