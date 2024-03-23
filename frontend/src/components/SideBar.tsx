@@ -19,11 +19,11 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import SentIcon from "@mui/icons-material/Send";
-import StarIcon from '@mui/icons-material/Star';
-import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-import { Route, Routes, useNavigate } from "react-router-dom";
+import StarIcon from "@mui/icons-material/Star";
+import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import MailComposer from "./EmailCompose";
 import EmailInbox from "./EmailInbox";
 import EmailsSent from "./EmailsSent";
@@ -42,49 +42,49 @@ const itemsMenu: {
   name: string;
   component: JSX.Element;
 }[] = [
-  {
-    id: "inbox",
-    route: "",
-    name: "Inbox",
-    component: <EmailInbox />,
-  },
-  {
-    id: "sent",
-    route: "sent",
-    name: "Sent",
-    component: <EmailsSent />,
-  },
-  {
-    id: "important",
-    route: "important",
-    name: "Important",
-    component: <EmailFolders folderId={1} />,
-  },
-  {
-    id: "social",
-    route: "social",
-    name: "Social",
-    component: <EmailFolders folderId={2} />,
-  },
-  {
-    id: "spam",
-    route: "spam",
-    name: "Spam",
-    component: <EmailFolders folderId={3} />,
-  },
-  {
-    id: "trash",
-    route: "trash",
-    name: "Trash",
-    component: <EmailFolders folderId={4} />,
-  },
-  {
-    id: "send-email",
-    route: "send",
-    name: "Send email",
-    component: <MailComposer />,
-  },
-];
+    {
+      id: "inbox",
+      route: "",
+      name: "Inbox",
+      component: <EmailInbox />,
+    },
+    {
+      id: "sent",
+      route: "sent",
+      name: "Sent",
+      component: <EmailsSent />,
+    },
+    {
+      id: "important",
+      route: "important",
+      name: "Important",
+      component: <EmailFolders folderId={1} />,
+    },
+    {
+      id: "social",
+      route: "social",
+      name: "Social",
+      component: <EmailFolders folderId={2} />,
+    },
+    {
+      id: "spam",
+      route: "spam",
+      name: "Spam",
+      component: <EmailFolders folderId={3} />,
+    },
+    {
+      id: "trash",
+      route: "trash",
+      name: "Trash",
+      component: <EmailFolders folderId={4} />,
+    },
+    {
+      id: "send-email",
+      route: "send",
+      name: "Send email",
+      component: <MailComposer />,
+    },
+  ];
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -162,6 +162,8 @@ export default function SideBar() {
   const storedValue = localStorage.getItem("FakeEmailUser");
   const parsedValue = JSON.parse(storedValue as string);
   const name = parsedValue.name;
+  const location = useLocation();
+  const currentRoute = location.pathname.split("/").filter(Boolean)[1] ?? "";
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -175,7 +177,7 @@ export default function SideBar() {
     route: string;
   }
 
-  const _clickOptiopn = (evt: evtType) => {
+  const _clickOption = (evt: evtType) => {
     navigate(`/emails/${evt.route}`);
   };
 
@@ -226,7 +228,7 @@ export default function SideBar() {
           >
             Email
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             id="FakeEmail"
@@ -281,12 +283,17 @@ export default function SideBar() {
         <List>
           {itemsMenu.map((item, index) => (
             <ListItem
-              onClick={() => _clickOptiopn(item)}
+              onClick={() => _clickOption(item)}
               key={item.name}
               disablePadding
-              sx={{ display: "block" }}
+              sx={{
+                display: "block",
+                backgroundColor:
+                  currentRoute === item.route ? "#dbedff" : "inherit",
+              }}
             >
               <ListItemButton
+                title={item.name}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
@@ -302,7 +309,7 @@ export default function SideBar() {
                 >
                   {index === 0 && <InboxIcon />}
                   {index === 1 && <SentIcon />}
-                  {index === 2 && <StarIcon/>}
+                  {index === 2 && <StarIcon />}
                   {index === 3 && <ConnectWithoutContactIcon />}
                   {index === 4 && <ReportProblemIcon />}
                   {index === 5 && <DeleteIcon />}
