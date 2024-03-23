@@ -51,7 +51,7 @@ const Password = () => {
       return;
     }
 
-    if (password == newPassword) {
+    if (password === newPassword) {
       setError("Passwords are the same.");
       return;
     }
@@ -62,6 +62,7 @@ const Password = () => {
     }
 
     if (email && cellphone && password && newPassword) {
+      setLoading(true);
       const updatedUser = {
         email: email,
         cellphone: cellphone,
@@ -70,7 +71,6 @@ const Password = () => {
       };
       try {
         await patchUser(updatedUser);
-        setLoading(false);
         setSuccess("Password updated successfully");
         setTimeout(() => {
           navigate("/login");
@@ -85,6 +85,7 @@ const Password = () => {
         if (e === 404) {
           setError("User not found. Please try again.");
         }
+      } finally {
         setLoading(false);
       }
     }

@@ -69,7 +69,6 @@ const Login = () => {
           });
           navigate("/emails");
         }
-        setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(e);
@@ -79,6 +78,7 @@ const Login = () => {
         if (e === 404) {
           setError("User not found. Please try again.");
         }
+      } finally {
         setLoading(false);
       }
     }
