@@ -55,7 +55,7 @@ const SignUp = () => {
       return;
     }
 
-    if (password != repeatedPassword) {
+    if (password !== repeatedPassword) {
       setError("Passwords do not match.");
       return;
     }
@@ -66,6 +66,7 @@ const SignUp = () => {
     }
 
     if (full_name && email && password && cellphone) {
+      setLoading(true);
       try {
         await dispatch(
           signup({
@@ -76,7 +77,6 @@ const SignUp = () => {
           }),
         ).unwrap();
         setSuccess("Account created successfully");
-        setLoading(true);
         setTimeout(() => {
           navigate("/login");
         }, 5000);
@@ -86,6 +86,7 @@ const SignUp = () => {
         if (e === 400) {
           setError("Email already taken. Please try again.");
         }
+      } finally {
         setLoading(false);
       }
     }
