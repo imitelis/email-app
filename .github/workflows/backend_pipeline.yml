@@ -102,13 +102,15 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           PROD_FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
           DEV_FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+          ELASTIC_USER: ${{ secrets.ELASTIC_USER }}
+          ELASTIC_PASSWORD: ${{secrets.ELASTIC_PASSWORD}}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script_stop: true
-          envs: FLASK_ENV, FLASK_DEBUG, FLASK_RUN_HOST, FLASK_RUN_PORT, DATABASE_URI, SERVER_NAME, JWT_SECRET_KEY, SMTP_USER, SMTP_PASSWORD, SMTP_SERVER, SMTP_PORT, APP_URL, PROD_FRONT_URL, DEV_FRONT_URL
+          envs: ELASTIC_USER, ELASTIC_PASSWORD, FLASK_ENV, FLASK_DEBUG, FLASK_RUN_HOST, FLASK_RUN_PORT, DATABASE_URI, SERVER_NAME, JWT_SECRET_KEY, SMTP_USER, SMTP_PASSWORD, SMTP_SERVER, SMTP_PORT, APP_URL, PROD_FRONT_URL, DEV_FRONT_URL
 
           script: |
             ls -all
@@ -137,6 +139,8 @@ jobs:
             export APP_URL=$APP_URL
             export PROD_FRONT_URL=$PROD_FRONT_URL
             export DEV_FRONT_URL=$DEV_FRONT_URL
+            export ELASTIC_USER=$ELASTIC_USER
+            export ELASTIC_PASSWORD=$ELASTIC_PASSWORD
             killall gunicorn || ls
             gunicorn --bind 0.0.0.0:8000 main:app --daemon
 
