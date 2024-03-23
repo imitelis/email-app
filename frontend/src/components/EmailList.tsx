@@ -51,7 +51,7 @@ const EmailList = (props: Props) => {
 
   useEffect(() => {
     setIsEmailSelected(selectedEmail !== null);
-  }, [selectedEmail, isEmailSelected]);
+  }, [selectedEmail]);
 
   const handleChangeFolder = (event: SelectChangeEvent<number>) => {
     setSelectedFolder(Number(event.target.value));
@@ -65,7 +65,7 @@ const EmailList = (props: Props) => {
         };
         await patchFolderEmail(token, selectedEmail, updatedFolder);
         setSuccess("Email moved successfully");
-      } catch (e: any) {
+      } catch (e: unknown) {
         setError("Something wrong happened. Please try again.");
       }
     }

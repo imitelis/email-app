@@ -24,7 +24,7 @@ const EmailFolders = (props: Props) => {
   useEffect(() => {
     dispatch(getEmailsFolder(folderId));
     dispatch(reset());
-  }, [folderId]);
+  }, [folderId, dispatch]);
 
   const clearSearchedEmails = () => {
     dispatch(reset());

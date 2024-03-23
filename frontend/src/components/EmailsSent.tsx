@@ -19,7 +19,7 @@ const EmailsSent = () => {
   useEffect(() => {
     dispatch(getEmailsSent());
     dispatch(reset());
-  }, []);
+  }, [dispatch]);
 
   const clearSearchedEmails = () => {
     dispatch(reset());
