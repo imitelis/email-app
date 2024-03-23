@@ -69,8 +69,7 @@ const Login = () => {
           });
           navigate("/emails");
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error(e);
         if (e === 401) {
           setError("Invalid credentials. Please try again.");

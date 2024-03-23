@@ -19,7 +19,7 @@ const EmailInbox = () => {
   useEffect(() => {
     dispatch(getEmails());
     dispatch(reset());
-  }, []);
+  }, [dispatch]);
 
   const clearSearchedEmails = () => {
     dispatch(reset());
