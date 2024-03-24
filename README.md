@@ -68,3 +68,14 @@
 - You should check that the pipelines in your own branchs or own forks are working correctly
 - Just do a simple `git push origin main` to trigger the pipelines in the origin repository
 - If something goes wrong, you can re-run the jobs once more in the `Actions` part of the GitHub repository
+
+# CODE REVIEW
+** Mileston 2 **
+- [x] Implementing semantic search with elasticsearch [JuanEstebanR](https://github.com/JuanEstebanR)
+- [Commit#1](https://github.com/imitelis/Email_App/commit/6643d249a8401625ffd4e133f18d1ea4dd45ff5c) [Commit#2](https://github.com/imitelis/Email_App/commit/894d0763d0006998f5453f181185f3f4c02e7fee) 
+- Implemented semantic search on the front end, emails are sent through the elasticsearch API then ingested into a trained pipeline that returns tokens that are used to filter the results based on the meaning of a text.
+- The semantic search was implemented for the body of an email and the subject.
+
+- [x] Fixed bug and added organization of emails [JulianMendoza](https://github.com/Mendo6472)
+- Fixed bug regarding reloading the page when viewing an email: [PR#1](https://github.com/imitelis/Email_App/pull/1)
+- Added seeing organized emails into sent emails and into folders [PR#2](https://github.com/imitelis/Email_App/pull/3)
