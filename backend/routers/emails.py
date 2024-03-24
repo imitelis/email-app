@@ -365,14 +365,25 @@ class SearchInboxEmailAPI(Resource):
             "query": {
                 "bool": {
                     "must": {
-                        "match": {"recipient_uuid": db_user.uuid}
+                        "match": {
+                            "recipient_uuid": db_user.uuid
+                        }
                     },
                     "should": [
                         {
                             "text_expansion": {
-                                "ml.inference.email_body_expanded.predicted_value": {
-                                    "model_text": search_query,
+                                "ml.inference.email_subject_expanded.predicted_value": {
                                     "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "text_expansion": {
+                                "ml.inference.email_body_expanded.predicted_value": {
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
                                     "boost": 1
                                 }
                             }
@@ -426,14 +437,25 @@ class SearchSentEmailAPI(Resource):
             "query": {
                 "bool": {
                     "must": {
-                        "match": {"sender_uuid": db_user.uuid}
+                        "match": {
+                            "sender_uuid": db_user.uuid
+                        }
                     },
                     "should": [
                         {
                             "text_expansion": {
-                                "ml.inference.email_body_expanded.predicted_value": {
-                                    "model_text": search_query,
+                                "ml.inference.email_subject_expanded.predicted_value": {
                                     "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "text_expansion": {
+                                "ml.inference.email_body_expanded.predicted_value": {
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
                                     "boost": 1
                                 }
                             }
@@ -464,27 +486,36 @@ class SearchFolderEmailAPI(Resource):
             "query": {
                 "bool": {
                     "must": [{
-                        "match": {"sender_uuid": db_user.uuid}
+                        "match": {"recipient_uuid": db_user.uuid}
                     },
-                    {
-                        "match": {
-                            "public_email_recipient_folder": folder
-                        }
-                    }],
-                "should": [
-                    {
-                        "text_expansion": {
-                            "ml.inference.email_body_expanded.predicted_value": {
-                                "model_text": search_query,
-                                "model_id": ".elser_model_2_linux-x86_64",
-                                "boost": 1
+                        {
+                            "match": {
+                                "folder": folder
+                            }
+                        }],
+                    "should": [
+                        {
+                            "text_expansion": {
+                                "ml.inference.email_subject_expanded.predicted_value": {
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "text_expansion": {
+                                "ml.inference.email_body_expanded.predicted_value": {
+                                    "model_id": ".elser_model_2_linux-x86_64",
+                                    "model_text": search_query,
+                                    "boost": 1
+                                }
                             }
                         }
-                    }
-                ]
-            }
-        },
-        "min_score": 10
+                    ]
+                }
+            },
+            "min_score": 10
         }
         res = es.search(index="search-emails", body=query, size=10)
         emails = format_emails(res, db_user)

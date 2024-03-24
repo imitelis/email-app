@@ -47,7 +47,7 @@ def format_email_to_doc(email):
             "email_subject": str(email.subject),
             "email_body": str(email.body),
             "sent_date": email.sent_date,
-            "read_date": email.read_date    ,
+            "read_date": email.read_date,
             "folder": str(email.recipient_folder)
     }
     return doc
