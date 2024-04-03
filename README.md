@@ -83,4 +83,3 @@
 - [x] Refactored code in some files and add styles on the navbar for a better accesibility and ux [RABrL](https://github.com/RABrL)
 - Refactor code [PR#4](https://github.com/imitelis/Email_App/pull/4) and [PR#5](https://github.com/imitelis/Email_App/pull/5)
 -  Changes the background color of the navbar elements when visit the page and add tooltips [PR#7](https://github.com/imitelis/Email_App/pull/7)
-- 
